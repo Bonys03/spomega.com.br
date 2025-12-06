@@ -1,212 +1,133 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>SP Omega - Terminal de Acesso</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>SP Omega</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Consolas, "Courier New", monospace;
-            background: radial-gradient(circle at top, #0f172a 0, #020617 40%, #000 100%);
-            color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+/* ===== INTRO ===== */
+.intro {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top, #020617 0%, #000 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeOut 1.2s ease forwards;
+    animation-delay: 6s;
+}
 
-        .terminal {
-            width: 90%;
-            max-width: 600px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid #22d3ee;
-            box-shadow: 0 0 25px rgba(34, 211, 238, 0.4);
-            border-radius: 10px;
-            padding: 20px;
-        }
+.intro.hidden {
+    display: none;
+}
 
-        .terminal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 12px;
-            color: #9ca3af;
-        }
+.intro-content {
+    text-align: center;
+    font-family: Consolas, monospace;
+    color: #22d3ee;
+}
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 999px;
-            background: #22c55e;
-            box-shadow: 0 0 10px #22c55e;
-            margin-right: 6px;
-        }
+.welcome {
+    font-size: 2rem;
+    letter-spacing: 4px;
+    opacity: 0;
+    animation: fadeIn 1.5s ease forwards;
+}
 
-        .title {
-            font-size: 20px;
-            margin: 0 0 10px;
-            color: #f97316;
-            text-shadow: 0 0 8px rgba(249, 115, 22, 0.8);
-        }
+.omega {
+    font-size: 6rem;
+    margin-top: 20px;
+    color: #f97316;
+    text-shadow:
+        0 0 10px #f97316,
+        0 0 30px rgba(249, 115, 22, 0.8);
+    opacity: 0;
+    animation: glitchIn 2s ease forwards;
+    animation-delay: 2.5s;
+}
 
-        .story {
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 16px;
-        }
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
 
-        .hint {
-            font-size: 13px;
-            color: #a5b4fc;
-            border-left: 3px solid #22d3ee;
-            padding-left: 8px;
-            margin-bottom: 16px;
-        }
+@keyframes glitchIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+        text-shadow: none;
+    }
+    40% {
+        opacity: 1;
+        text-shadow: 2px 0 red, -2px 0 cyan;
+    }
+    70% {
+        text-shadow: -2px 0 red, 2px 0 cyan;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        text-shadow:
+            0 0 10px #f97316,
+            0 0 30px rgba(249, 115, 22, 0.8);
+    }
+}
 
-        label {
-            font-size: 13px;
-            display: block;
-            margin-bottom: 4px;
-        }
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
 
-        .input-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 8px 10px;
-            border-radius: 4px;
-            border: 1px solid #22d3ee;
-            background: #020617;
-            color: #e5e7eb;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
-        }
-
-        button {
-            padding: 8px 14px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            background: #22d3ee;
-            color: #020617;
-        }
-
-        button:hover {
-            filter: brightness(1.1);
-        }
-
-        .feedback {
-            font-size: 13px;
-            min-height: 18px;
-        }
-
-        .feedback.ok {
-            color: #4ade80;
-        }
-
-        .feedback.error {
-            color: #f97316;
-        }
-
-        .small {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 10px;
-        }
-    </style>
+/* ===== CONTEÚDO DO SITE ===== */
+#site {
+    min-height: 100vh;
+    background: #020617;
+    color: #e5e7eb;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="terminal">
-    <div class="terminal-header">
-        <div style="display:flex;align-items:center;">
-            <div class="status-dot"></div>
-            <span>SP Ω // SECURE NODE #013</span>
-        </div>
-        <span>ACCESS LEVEL: ALPHA</span>
+<!-- INTRO -->
+<div id="intro" class="intro">
+    <div class="intro-content">
+        <div class="welcome">BEM-VINDO</div>
+        <div class="omega">Ω</div>
     </div>
+</div>
 
-    <h1 class="title">TERMINAL DE ACESSO</h1>
-
-    <p class="story">
-        Você encontra um terminal da corporação <strong>SP Omega</strong>.
-        Para destravar a próxima área, é preciso digitar o <strong>código de acesso</strong>.
-    </p>
-
-    <p class="hint">
-        <strong>Dica:</strong> use a palavra-chave da corporação + a resposta para tudo no universo, segundo um certo autor de ficção.
-        <br>
-    </p>
-
-    <label for="answer">Insira o código de acesso:</label>
-    <div class="input-row">
-        <input type="text" id="answer" placeholder="Ex.: PALAVRA-XX" autocomplete="off">
-        <button type="button" onclick="checkAnswer()">ENVIAR</button>
-    </div>
-
-    <p id="feedback" class="feedback"></p>
-
-    <p class="small">
-        Progresso é salvo neste dispositivo. Se você já tiver destravado este terminal, ele ficará desbloqueado ao recarregar a página.
-    </p>
+<!-- SITE NORMAL -->
+<div id="site">
+    <h1>SP Omega</h1>
+    <p>Terminal operacional ativo.</p>
 </div>
 
 <script>
-    const SECRET_CODE = "OMEGA-42";
-    const STORAGE_KEY = "spomega_puzzle1";
+const INTRO_KEY = "spomega_intro_seen";
 
-    function checkAnswer() {
-        const input = document.getElementById("answer");
-        const feedback = document.getElementById("feedback");
+window.addEventListener("DOMContentLoaded", () => {
+    const intro = document.getElementById("intro");
 
-        const value = input.value.trim().toUpperCase();
-
-        if (value === "") {
-            feedback.textContent = "O terminal aguarda um código...";
-            feedback.className = "feedback error";
-            return;
-        }
-
-        if (value === SECRET_CODE) {
-            feedback.textContent = "ACESSO CONCEDIDO. O terminal da SP Omega é destravado.";
-            feedback.className = "feedback ok";
-            localStorage.setItem(STORAGE_KEY, "solved");
-            input.disabled = true;
-        } else {
-            feedback.textContent = "ACESSO NEGADO. Nada acontece. Talvez o código esteja incorreto.";
-            feedback.className = "feedback error";
-        }
+    if (localStorage.getItem(INTRO_KEY)) {
+        intro.classList.add("hidden");
+    } else {
+        localStorage.setItem(INTRO_KEY, "true");
     }
-
-    // Ao carregar a página, verifica se o puzzle já foi resolvido neste navegador
-    window.addEventListener("DOMContentLoaded", () => {
-        const input = document.getElementById("answer");
-        const feedback = document.getElementById("feedback");
-
-        const solved = localStorage.getItem(STORAGE_KEY);
-
-        if (solved === "solved") {
-            feedback.textContent = "Este terminal já foi destravado anteriormente neste dispositivo.";
-            feedback.className = "feedback ok";
-            input.disabled = true;
-        }
-    });
+});
 </script>
 
 </body>
