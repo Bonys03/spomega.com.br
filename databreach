@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>SP Omega — Data Breach</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Consolas, monospace;
+    background: radial-gradient(circle at top, #020617 0%, #000 75%);
+    color: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.locked {
+    text-align: center;
+    color: #f97316;
+}
+
+.container {
+    width: 90%;
+    max-width: 700px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid #22d3ee;
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.4);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+h1 {
+    color: #22d3ee;
+    margin-bottom: 8px;
+}
+
+.story {
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.memory-bar {
+    background: #020617;
+    border: 1px solid #22d3ee;
+    height: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.memory-used {
+    height: 100%;
+    background: linear-gradient(90deg, #22d3ee, #f97316);
+    width: 0%;
+    transition: width .3s;
+}
+
+.program {
+    margin-bottom: 12px;
+}
+
+.program label {
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+
+input[type="number"] {
+    width: 100%;
+    margin-top: 4px;
+    padding: 6px;
+    background: #020617;
+    border: 1px solid #22d3ee;
+    color: #e5e7eb;
+}
+
+.feedback {
+    min-height: 18px;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.error { color: #f97316; }
+.ok { color: #4ade80; }
+
+button {
+    margin-top: 12px;
+    padding: 8px 14px;
+    background: #22d3ee;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="locked" class="locked" style="display:none;">
+    <h1>ACESSO BLOQUEADO</h1>
+    <p>É necessário desbloquear o terminal inicial da SP Omega.</p>
+</div>
+
+<div id="puzzle" class="container" style="display:none;">
+
+    <h1>DATA BREACH</h1>
+    <p class="story">
+        Para infiltrar o sistema, você deve alocar corretamente a memória
+        entre os programas ativos. Um erro causará <strong>overflow</strong>.
+    </p>
+
+    <div class="memory-bar">
+        <div id="memBar" class="memory-used"></div>
+    </div>
+
+    <div id="programs"></div>
+
+    <p id="feedback" class="feedback"></p>
+
+    <button onclick="checkSolution()">CONFIRMAR ALOCAÇÃO</button>
+
+</div>
+
+<script>
+/* ===== CHAVES ===== */
+const TERMINAL_KEY = "spomega_puzzle1";
+const DATA_KEY = "spomega_databreach";
+
+/* ===== CONFIG ===== */
+const TOTAL_MEMORY = 10;
+
+const PROGRAMS = [
+    { name: "Kernel Core", max: 6 },
+    { name: "Firewall AI", max: 4 },
+    { name: "Data Scrubber", max: 3 }
+];
+
+/* ===== SOLUÇÃO ===== */
+const SOLUTION = [6, 4, 0];
+
+/* ===== CONTROLE DE ACESSO ===== */
+if (!localStorage.getItem(TERMINAL_KEY)) {
+    document.getElementById("locked").style.display = "block";
+} else {
+    document.getElementById("puzzle").style.display = "block";
+}
+
+/* ===== UI ===== */
+const container = document.getElementById("programs");
+
+PROGRAMS.forEach((p, i) => {
+    container.innerHTML += `
+        <div class="program">
+            <label>
+                <span>${p.name}</span>
+                <span>Max: ${p.max} GB</span>
+            </label>
+            <input type="number" min="0" max="${p.max}" value="0"
+                   oninput="updateMemory()">
+        </div>
+    `;
+});
+
+function updateMemory() {
+    const inputs = document.querySelectorAll("input");
+    let total = 0;
+    let overflow = false;
+
+    inputs.forEach((input, i) => {
+        const val = Number(input.value);
+        total += val;
+        if (val > PROGRAMS[i].max) overflow = true;
+    });
+
+    const bar = document.getElementById("memBar");
+    bar.style.width = Math.min(100, (total / TOTAL_MEMORY) * 100) + "%";
+
+    const feedback = document.getElementById("feedback");
+    feedback.textContent = "";
+
+    if (overflow) {
+        feedback.textContent = "OVERFLOW DETECTADO EM UM DOS PROGRAMAS.";
+        feedback.className = "feedback error";
+    } else if (total > TOTAL_MEMORY) {
+        feedback.textContent = "MEMORY LEAK: memória total excedida.";
+        feedback.className = "feedback error";
+    }
+}
+
+/* ===== SOLUÇÃO ===== */
+function checkSolution() {
+    const inputs = document.querySelectorAll("input");
+    const values = Array.from(inputs).map(i => Number(i.value));
+    const total = values.reduce((a,b)=>a+b,0);
+
+    if (values.some((v,i)=>v>PROGRAMS[i].max)) {
+        showError("OVERFLOW EM PROGRAMA.");
+        return;
+    }
+
+    if (total !== TOTAL_MEMORY) {
+        showError("MEMÓRIA TOTAL INCORRETA.");
+        return;
+    }
+
+    if (values.every((v,i)=>v===SOLUTION[i])) {
+        localStorage.setItem(DATA_KEY, "solved");
+        document.getElementById("feedback").textContent =
+            "DATA BREACH CONCLUÍDO. SISTEMA COMPROMETIDO.";
+        document.getElementById("feedback").className = "feedback ok";
+    } else {
+        showError("ALOCAÇÃO INVÁLIDA. EQUILÍBRIO NÃO ATINGIDO.");
+    }
+}
+
+function showError(msg) {
+    const f = document.getElementById("feedback");
+    f.textContent = msg;
+    f.className = "feedback error";
+}
+</script>
+
+</body>
+</html>
