@@ -136,6 +136,43 @@ nav a:hover {
     color: #9ca3af;
     margin-top: 6px;
 }
+
+.district-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+}
+
+.district-nav a {
+    color: #22d3ee;
+    text-decoration: none;
+}
+
+.district-nav a:hover {
+    text-decoration: underline;
+}
+
+.sep {
+    margin: 0 8px;
+    color: #64748b;
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: Consolas, monospace;
+    font-size: 0.8rem;
+}
+
+.logout-btn:hover {
+    background: rgba(239,68,68,0.15);
+}
+
 </style>
 </head>
 
@@ -292,5 +329,20 @@ Informações completas exigem credenciais de acesso elevadas.
 </div>
 
 </div>
+<script>
+<script>
+const access = localStorage.getItem("spomega_access");
+
+if (!access) {
+    window.location.href = "../acesso-negado/";
+}
+</script>
+
+function logout() {
+    localStorage.removeItem("spomega_access");
+    window.location.href = "../index.html";
+}
+</script>
+
 </body>
 </html>
