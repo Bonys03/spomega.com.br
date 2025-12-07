@@ -262,6 +262,27 @@ function setAccessGranted(level, silent = false) {
     document.getElementById("user").disabled = true;
     document.getElementById("pass").disabled = true;
 }
+
+function setAccessGranted(level, silent = false) {
+    const feedback = document.getElementById("feedback");
+    document.getElementById("level-label").textContent =
+        `NÍVEL ${level} AUTENTICADO`;
+
+    if (level === "CIVIL") {
+        window.location.href = "./civil/";
+        return;
+    }
+
+    if (!silent) {
+        feedback.textContent =
+            `ACESSO CONCEDIDO. PERMISSÕES ${level} ATIVAS.`;
+        feedback.className = "feedback ok";
+    }
+
+    document.getElementById("user").disabled = true;
+    document.getElementById("pass").disabled = true;
+}
+
 </script>
 
 
