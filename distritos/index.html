@@ -1,392 +1,294 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>SP Omega — Distritos</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>SP Ômega — Arquivo Urbano / Distritos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: radial-gradient(circle at top, #020617 0%, #000 75%);
-            color: #e5e7eb;
-            font-family: Consolas, monospace;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+<style>
+* { box-sizing: border-box; }
 
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid #22d3ee;
-            box-shadow: 0 0 25px rgba(34,211,238,.4);
-            border-radius: 10px;
-            padding: 20px 24px 26px;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #020617 0%, #000 75%);
+    color: #e5e7eb;
+    font-family: Consolas, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
+.container {
+    width: 100%;
+    max-width: 1150px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid #22d3ee;
+    box-shadow: 0 0 25px rgba(34,211,238,.35);
+    border-radius: 10px;
+    padding: 24px;
+}
 
-        h1 {
-            color: #22d3ee;
-            margin: 0;
-            font-size: 1.4rem;
-        }
+header {
+    margin-bottom: 14px;
+}
 
-        .sub {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-        }
+h1 {
+    color: #22d3ee;
+    font-size: 1.5rem;
+    margin: 0 0 6px 0;
+}
 
-        nav {
-            margin-bottom: 14px;
-            font-size: 0.8rem;
-            color: #9ca3af;
-        }
+.sub {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+}
 
-            nav a {
-                color: #22d3ee;
-                text-decoration: none;
-            }
+nav {
+    margin: 12px 0 20px;
+    font-size: .8rem;
+}
 
-                nav a:hover {
-                    text-decoration: underline;
-                }
+nav a {
+    color: #22d3ee;
+    text-decoration: none;
+}
 
-        .intro {
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-            color: #cbd5f5;
-        }
+nav a:hover { text-decoration: underline; }
 
-        .district-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
-        }
+.intro {
+    font-size: .9rem;
+    line-height: 1.5;
+    color: #cbd5f5;
+    margin-bottom: 22px;
+}
 
-        @media (max-width: 800px) {
-            .district-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 18px;
+}
 
-        .district-card {
-            border: 1px solid #1f2937;
-            border-radius: 8px;
-            padding: 10px 10px 12px;
-            background: radial-gradient(circle at top, rgba(31,41,55,0.9), rgba(15,23,42,0.95));
-        }
+@media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+}
 
-        .district-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
+.card {
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    padding: 12px;
+    background: radial-gradient(circle at top, rgba(31,41,55,.9), rgba(15,23,42,.95));
+}
 
-            .district-header h2 {
-                margin: 0;
-                font-size: 1rem;
-                color: #e5e7eb;
-            }
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+}
 
-        .tag {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            color: #a5b4fc;
-            white-space: nowrap;
-        }
+.card-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #e5e7eb;
+}
 
-        .district-image {
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid rgba(34,211,238,0.4);
-            margin-bottom: 8px;
-            background: #020617;
-            height: 260px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
+.tag {
+    font-size: .68rem;
+    color: #a5b4fc;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
 
-            .district-image img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                background: #020617;
-                display: block;
-            }
+.image {
+    height: 240px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(34,211,238,.4);
+    margin-bottom: 10px;
+}
 
-        .placeholder-label {
-            position: absolute;
-            bottom: 4px;
-            right: 6px;
-            font-size: 0.65rem;
-            background: rgba(15,23,42,0.85);
-            padding: 2px 4px;
-            border-radius: 3px;
-            border: 1px solid rgba(148,163,184,0.6);
-            color: #9ca3af;
-        }
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
 
-        .district-text {
-            font-size: 0.8rem;
-            line-height: 1.4;
-        }
+.section {
+    font-size: .82rem;
+    line-height: 1.45;
+    margin-bottom: 6px;
+}
 
-            .district-text strong {
-                color: #f97316;
-            }
+.section strong { color: #f97316; }
 
-        .meta {
-            font-size: 0.72rem;
-            color: #9ca3af;
-            margin-top: 4px;
-        }
-    </style>
+.meta {
+    font-size: .7rem;
+    color: #9ca3af;
+    margin-top: 6px;
+}
+</style>
 </head>
+
 <body>
+<div class="container">
 
-    <div class="container">
-        <header>
-            <h1>DISTRITOS DE SÃO PAULO ÔMEGA</h1>
-            <span class="sub">MAPA URBANO // NÍVEL DE ACESSO: CIVIL</span>
-        </header>
+<header>
+<h1>ARQUIVO URBANO — DISTRITOS DA MEGALÓPOLE SÃO PAULO ÔMEGA</h1>
+<div class="sub">NÍVEL DE ACESSO: CIVIL • DISTRIBUIÇÃO PÚBLICA</div>
+</header>
 
-        <nav>
-            <a href="../index.html">⮐ Voltar ao Terminal</a>
-        </nav>
+<nav>
+<a href="../index.html">⮐ Retornar ao Terminal Central</a>
+</nav>
 
-        <p class="intro">
-            A megalópole São Paulo Ômega é dividida em oito distritos principais, cada um com função,
-            estética e clima social próprios. Abaixo, você encontra um resumo visual e textual de cada área,
-            útil para orientação de campo, planejamento de operações e ambientação de missões.
-        </p>
+<p class="intro">
+São Paulo Ômega é uma megalópole multiestratificada, expandida por séculos de fusão urbana,
+colapso ambiental, reorganização política e engenharia territorial extrema.
+Seus distritos não representam apenas divisões administrativas — cada um funciona como
+um ecossistema urbano próprio, moldado por forças políticas, econômicas e culturais distintas.
+<br><br>
+As informações abaixo refletem apenas dados públicos e observações civis gerais.
+Informações completas exigem credenciais de acesso elevadas.
+</p>
 
-        <div class="district-grid">
+<div class="grid">
 
-            <!-- 1. Ômega-Central -->
-            <section class="district-card" id="omega-central">
-                <div class="district-header">
-                    <h2>1. Distrito Ômega-Central</h2>
-                    <span class="tag">Núcleo Político</span>
-                </div>
+<!-- Ômega-Central -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Ômega-Central</h2>
+<span class="tag">Núcleo Administrativo</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/omega-central.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> centro administrativo, jurídico e regulatório da megalópole.</div>
+<div class="section"><strong>Influência predominante:</strong> governança centralizada e institucional.</div>
+<div class="section"><strong>Nível de controle:</strong> máximo — vigilância contínua, circulação monitorada.</div>
+<div class="section"><strong>Observação pública:</strong> acesso é permitido; permanência prolongada é desaconselhada.</div>
+<div class="meta">Praça do Protocolo • Esplanada Cadastral • Setores Executivos</div>
+</section>
 
-                <div class="district-image">
-                    <!-- Quando tiver a imagem, substitua o src pelo arquivo real -->
-                    <img src="../assets/img/distritos/omega-central.webp" alt="Distrito Ômega-Central — núcleo governamental monolítico e vigiado">
-                    <span class="placeholder-label">Ômega-Central</span>
-                </div>
+<!-- Neo-Paulistano -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Neo-Paulistano</h2>
+<span class="tag">Elite Corporativa</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/neo-paulistano.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> concentração de torres corporativas, centros financeiros e inovação privada.</div>
+<div class="section"><strong>Influência predominante:</strong> tecnocrática e econômica.</div>
+<div class="section"><strong>Nível de controle:</strong> elevado — segurança privada e filtragem social.</div>
+<div class="section"><strong>Observação pública:</strong> circulação tolerada; integração social limitada.</div>
+<div class="meta">Eixo Azul • Altos Financeiros • Complexos Espelhados</div>
+</section>
 
-                <!--
-                Sugestão de prompt para gerar a imagem:
-                "Cyberpunk government plaza at night, monolithic green-blue buildings, holographic emblems,
-                heavy security drones, tense atmosphere, ultra wide shot, high detail, volumetric lighting."
-                -->
+<!-- Faixa Bandeirante -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Faixa Bandeirante</h2>
+<span class="tag">Industrial & Logístico</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/faixa-bandeirante.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> zona industrial pesada, ferroviária e de transporte massivo.</div>
+<div class="section"><strong>Influência predominante:</strong> produtiva e populacional.</div>
+<div class="section"><strong>Nível de controle:</strong> médio — autoridade fragmentada.</div>
+<div class="section"><strong>Observação pública:</strong> ambiente hostil; incidentes operacionais são frequentes.</div>
+<div class="meta">Corredores de Carga • Pátios Ferroviários • Zonas Petroquímicas</div>
+</section>
 
-                <div class="district-text">
-                    <p><strong>Função:</strong> núcleo político e administrativo, epicentro das decisões oficiais.</p>
-                    <p><strong>Estilo:</strong> arquitetura monolítica verde-azulada, painéis holográficos do governo, segurança pesada.</p>
-                    <p><strong>Clima social:</strong> tenso, formal, vigiado; cada movimento parece protocolado.</p>
-                </div>
-                <div class="meta">Praça do Protocolo • Núcleo Governamental • Esplanada Cadastral • Setor ARCOP • Linha Executiva</div>
-            </section>
+<!-- Favela Vertical -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Favela Vertical</h2>
+<span class="tag">Habitação Superdensa</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/favela-vertical.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> megablocos residenciais improvisados e empilhados.</div>
+<div class="section"><strong>Influência predominante:</strong> autogestão local e adaptação social.</div>
+<div class="section"><strong>Nível de controle:</strong> baixo — regras informais prevalecem.</div>
+<div class="section"><strong>Observação pública:</strong> circulação requer negociação social constante.</div>
+<div class="meta">Blocos Habitacionais • Vielas Elevadas • Infraestrutura Paralela</div>
+</section>
 
-            <!-- 2. Neo-Paulistano -->
-            <section class="district-card" id="neo-paulistano">
-                <div class="district-header">
-                    <h2>2. Distrito Neo-Paulistano</h2>
-                    <span class="tag">Elite Corporativa</span>
-                </div>
+<!-- Zona Livre Leste -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Zona Livre Leste</h2>
+<span class="tag">Contracultura & Autonomia</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/zona-livre-leste.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> polo cultural alternativo, tecnologia aberta e experimentação social.</div>
+<div class="section"><strong>Influência predominante:</strong> descentralizada e comunitária.</div>
+<div class="section"><strong>Nível de controle:</strong> reduzido — tolerância institucional variável.</div>
+<div class="section"><strong>Observação pública:</strong> criatividade elevada; estabilidade imprevisível.</div>
+<div class="meta">Corredores Criativos • Setores Holográficos • Comunidades Livres</div>
+</section>
 
-                <div class="district-image">
-                    <img src="../assets/img/distritos/neo-paulistano.webp" alt="Arranha-céus espelhados, luz azul neon, zona corporativa de elite">
-                    <span class="placeholder-label">Neo-Paulistano</span>
-                </div>
+<!-- Anel Espectral -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Anel Espectral</h2>
+<span class="tag">Espiritual-Tecnológico</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/anel-espectral.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> zona de fenômenos anômalos, templos tecnológicos e cultos híbridos.</div>
+<div class="section"><strong>Influência predominante:</strong> filosófica e experimental.</div>
+<div class="section"><strong>Nível de controle:</strong> instável — protocolos especiais aplicados.</div>
+<div class="section"><strong>Observação pública:</strong> realidade perceptiva inconsistente.</div>
+<div class="meta">Círculos Internos • Templos de Ressonância • Zonas Prismáticas</div>
+</section>
 
-                <!-- Prompt sugerido:
-                "Futuristic corporate district at night, glass skyscrapers, blue neon, autonomous cars on skyways,
-                discreet drones, cold and elegant atmosphere, cyberpunk city, high contrast."
-                -->
+<!-- Jardim Neotec -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Jardim Neotec</h2>
+<span class="tag">Biotecnologia & Luxo</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/jardim-neotec.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> integração de biotecnologia, medicina avançada e habitação premium.</div>
+<div class="section"><strong>Influência predominante:</strong> científica e elitizada.</div>
+<div class="section"><strong>Nível de controle:</strong> alto — acesso regulado por biometria.</div>
+<div class="section"><strong>Observação pública:</strong> ambiente controlado e artificialmente estável.</div>
+<div class="meta">Jardins Suspensos • Complexos Genômicos</div>
+</section>
 
-                <div class="district-text">
-                    <p><strong>Função:</strong> coração corporativo de elite, tecnologia de ponta e finanças.</p>
-                    <p><strong>Estilo:</strong> torres espelhadas, luz azul neon, carros autônomos, drones silenciosos.</p>
-                    <p><strong>Clima social:</strong> competitivo, elegante, frio; a aparência vale mais que a verdade.</p>
-                </div>
-                <div class="meta">Esplanada Tecnogarca • Torre de Vidro • Eixo Azul • Altos Financeiros • Vale da Inovação</div>
-            </section>
+<!-- Morto-Oeste -->
+<section class="card">
+<div class="card-header">
+<h2>Distrito Morto-Oeste</h2>
+<span class="tag">Zona de Ruína</span>
+</div>
+<div class="image">
+<img src="../assets/img/distritos/morto-oeste.webp" alt="">
+</div>
+<div class="section"><strong>Perfil urbano:</strong> território degradado, instável e parcialmente abandonado.</div>
+<div class="section"><strong>Influência predominante:</strong> inexistente ou fragmentária.</div>
+<div class="section"><strong>Nível de controle:</strong> mínimo — presença institucional intermitente.</div>
+<div class="section"><strong>Observação pública:</strong> alto risco estrutural e ambiental.</div>
+<div class="meta">Ruínas Ativas • Campos Deformados • Estações Fantasma</div>
+</section>
 
-            <!-- 3. Faixa Bandeirante -->
-            <section class="district-card" id="faixa-bandeirante">
-                <div class="district-header">
-                    <h2>3. Distrito Faixa Bandeirante</h2>
-                    <span class="tag">Industrial & Ferroviário</span>
-                </div>
+</div>
 
-                <div class="district-image">
-                    <img src="../assets/img/distritos/faixa-bandeirante.webp" alt="Trilhos múltiplos, fábricas e guindastes em ambiente enfumaçado">
-                    <span class="placeholder-label">Faixa Bandeirante</span>
-                </div>
-
-                <!-- Prompt sugerido:
-                "Industrial rail yard at dusk, multiple train tracks, giant warehouses, smoke, cranes,
-                sparks in the air, gritty cyberpunk industrial zone."
-                -->
-
-                <div class="district-text">
-                    <p><strong>Função:</strong> zona industrial e ferroviária, espinha dorsal logística da cidade.</p>
-                    <p><strong>Estilo:</strong> armazéns colossais, trilhos múltiplos, fumaça constante, guindastes e equipamentos pesados.</p>
-                    <p><strong>Clima social:</strong> barulhento, perigoso e exaustivo; nada aqui é totalmente seguro.</p>
-                </div>
-                <div class="meta">Corredor de Carga • Plataformas 77–92 • Campo de Containers • Trilhos Mortos • Pátio Carbonizado • Zona Petroquímica</div>
-            </section>
-
-            <!-- 4. Favela Vertical -->
-            <section class="district-card" id="favela-vertical">
-                <div class="district-header">
-                    <h2>4. Distrito Favela Vertical</h2>
-                    <span class="tag">Megablocos Habitacionais</span>
-                </div>
-
-                <div class="district-image">
-                    <img src="../assets/img/distritos/favela-vertical.webp" alt="Megablocos sobrepostos com corredores estreitos, luzes fracas e gambiarras">
-                    <span class="placeholder-label">Favela Vertical</span>
-                </div>
-
-                <!-- Prompt sugerido:
-                "Vertical shantytown megablock at night, stacked housing, narrow corridors, dim neon signs,
-                improvised cables and lights, dense and chaotic cyberpunk favela."
-                -->
-
-                <div class="district-text">
-                    <p><strong>Função:</strong> megablocos residenciais superdensos.</p>
-                    <p><strong>Estilo:</strong> corredores estreitos, luz fraca, gambiarras elétricas, estética improvisada.</p>
-                    <p><strong>Clima social:</strong> caótico e vibrante, mistura de desespero e resistência criativa.</p>
-                </div>
-                <div class="meta">Bloco 13 • Bloco 27 • Complexo Trama-Viva • Vielas Elevadas • Conjunto Horizonte • Favela Profunda • Passarelas Negras</div>
-            </section>
-
-            <!-- 5. Zona Livre Leste -->
-            <section class="district-card" id="zona-livre-leste">
-                <div class="district-header">
-                    <h2>5. Distrito Zona Livre Leste</h2>
-                    <span class="tag">Arte & Contracultura</span>
-                </div>
-
-                <div class="district-image">
-                    <img src="../assets/img/distritos/zona-livre-leste.webp" alt="Rua colorida com grafites, hologramas artesanais e pessoas alternativas">
-                    <span class="placeholder-label">Zona Livre Leste</span>
-                </div>
-
-                <!-- Prompt sugerido:
-                "Colorful cyberpunk arts district, street full of graffiti, handmade holograms, strange fashion,
-                open air performances, vibrant and chaotic energy."
-                -->
-
-                <div class="district-text">
-                    <p><strong>Função:</strong> berço da contracultura, arte livre e tecnologia aberta.</p>
-                    <p><strong>Estilo:</strong> grafites vivos, hologramas artesanais, estruturas orgânicas e coloridas.</p>
-                    <p><strong>Clima social:</strong> vibrante, criativo e imprevisível; liberdade e risco andam juntos.</p>
-                </div>
-                <div class="meta">Mirante da Luz Azul • Setor Holográfico • Praça da Arte Mutante • Corredores Livres • Comunidade Fluxo</div>
-            </section>
-
-            <!-- 6. Anel Espectral -->
-            <section class="district-card" id="anel-espectral">
-                <div class="district-header">
-                    <h2>6. Distrito Anel Espectral</h2>
-                    <span class="tag">Espiritual-Tecnológico</span>
-                </div>
-
-                <div class="district-image">
-                    <img src="../assets/img/distritos/anel-espectral.webp" alt="Templos eletrônicos com luzes iridescentes e geometria estranha">
-                    <span class="placeholder-label">Anel Espectral</span>
-                </div>
-
-                <!-- Prompt sugerido:
-                "Mystical techno-temple district, iridescent lights, impossible geometry, cyber monks,
-                electronic shrines, eerie spiritual atmosphere, fog and prism effects."
-                -->
-
-                <div class="district-text">
-                    <p><strong>Função:</strong> epicentro espiritual-tecnológico e anômalo.</p>
-                    <p><strong>Estilo:</strong> luzes iridescentes, templos eletrônicos e arquitetura geométrica impossível.</p>
-                    <p><strong>Clima social:</strong> misterioso, contemplativo e inquietante; a realidade parece instável.</p>
-                </div>
-                <div class="meta">Círculo Interior • Templo da Ressonância • Setor Prisma • Margens Brancas • Caminho do Eco • Núcleo Monástico</div>
-            </section>
-
-            <!-- 7. Jardim Neotec -->
-            <section class="district-card" id="jardim-neotec">
-                <div class="district-header">
-                    <h2>7. Distrito Jardim Neotec</h2>
-                    <span class="tag">Biotecnologia de Luxo</span>
-                </div>
-
-                <div class="district-image">
-                    <img src="../assets/img/distritos/jardim-neotec.webp" alt="Jardins suspensos bioluminescentes com prédios futuristas ao fundo">
-                    <span class="placeholder-label">Jardim Neotec</span>
-                </div>
-
-                <!-- Prompt sugerido:
-                "Futuristic bioluminescent garden district at night, hanging gardens, glowing plants,
-                sleek white and glass buildings, rich people walking, biotech luxury vibe."
-                -->
-
-                <div class="district-text">
-                    <p><strong>Função:</strong> centro de biotecnologia, medicina avançada e luxo.</p>
-                    <p><strong>Estilo:</strong> jardins suspensos, plantas bioluminescentes, arquitetura orgânica futurista.</p>
-                    <p><strong>Clima social:</strong> calmo, elegante e artificial; tudo é controlado e caro.</p>
-                </div>
-                <div class="meta">Terraço Biolume • Vale Genômico • Setor Verde Prime • Núcleo Remedial</div>
-            </section>
-
-            <!-- 8. Morto-Oeste -->
-            <section class="district-card" id="morto-oeste">
-                <div class="district-header">
-                    <h2>8. Distrito Morto-Oeste</h2>
-                    <span class="tag">Zona Ruína</span>
-                </div>
-
-                <div class="district-image">
-                    <img src="../assets/img/distritos/morto-oeste.webp" alt="Ruínas corroídas, terreno rachado e névoa tóxica em tom cinza-esverdeado">
-                    <span class="placeholder-label">Morto-Oeste</span>
-                </div>
-
-                <!-- Prompt sugerido:
-                "Post-apocalyptic wasteland district, crumbling ruins, cracked earth, toxic fog,
-                distorted time anomalies in the sky, eerie silence, cyberpunk ruin."
-                -->
-
-                <div class="district-text">
-                    <p><strong>Função:</strong> ruínas instáveis e terreno mutado, praticamente fora do controle oficial.</p>
-                    <p><strong>Estilo:</strong> estruturas corroídas, solo rachado, fendas e névoa tóxica.</p>
-                    <p><strong>Clima social:</strong> hostil, desesperador e imprevisível; apenas sobreviventes e saqueadores ousam ficar.</p>
-                </div>
-                <div class="meta">Ruínas Ferro-Vivas • Campo Morto • Desfiladeiro Cinza • Estação Fantasma • Terra Rachada • Vale da Névoa • Margem Desfeita</div>
-            </section>
-
-        </div>
-    </div>
-
+</div>
 </body>
 </html>
