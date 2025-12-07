@@ -162,35 +162,56 @@ button {
     </div>
 </div>
 
-<!-- TERMINAL / PUZZLE -->
+<!-- TERMINAL / LOGIN -->
 <div class="terminal">
     <div class="terminal-header">
         <span>SP Ω // SECURE NODE</span>
-        <span>ALPHA ACCESS</span>
+        <span id="level-label">ACESSO NÃO AUTENTICADO</span>
     </div>
 
-    <h1 class="title">TERMINAL DE ACESSO</h1>
+    <h1 class="title">TERMINAL DE AUTENTICAÇÃO</h1>
 
     <p class="story">
-        Um terminal do governo de São Paulo Omega aguarda autenticação.
+        Interface de acesso governamental da megalópole São Paulo Ômega.
+        Credenciais válidas são obrigatórias.
     </p>
 
     <p class="hint">
-        Dica: palavra-chave da corporação + resposta para tudo no universo.<br>
+        Níveis reconhecidos: CIVIL, BETA, ALPHA, OMEGA.<br>
+        Observação: acesso civil restrito a cidadãos registrados.
     </p>
 
     <div class="input-row">
-        <input id="answer" placeholder="PALAVRA-XX" autocomplete="off">
-        <button onclick="checkAnswer()">ENVIAR</button>
+        <input id="user" placeholder="USUÁRIO" autocomplete="off">
+    </div>
+
+    <div class="input-row" style="margin-top:8px">
+        <input id="pass" placeholder="SENHA" type="password" autocomplete="off">
+        <button onclick="login()">ENTRAR</button>
     </div>
 
     <p id="feedback" class="feedback"></p>
 </div>
 
+
 <script>
 const INTRO_KEY = "spomega_intro_seen";
-const PUZZLE_KEY = "spomega_puzzle1";
-const SECRET = "OMEGA-42";
+const ACCESS_KEY = "spomega_access";
+
+const USERS = {
+  "beta.tech": {
+    password: "BETA-113",
+    level: "BETA"
+  },
+  "alpha.ops": {
+    password: "ALPHA-739",
+    level: "ALPHA"
+  },
+  "omega.dir": {
+    password: "OMEGA-42",
+    level: "OMEGA"
+  }
+};
 
 window.addEventListener("DOMContentLoaded", () => {
     const intro = document.getElementById("intro");
@@ -200,29 +221,45 @@ window.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem(INTRO_KEY, "true");
     }
 
-    if (localStorage.getItem(PUZZLE_KEY)) {
-        document.getElementById("feedback").textContent =
-            "Este terminal já foi destravado anteriormente.";
-        document.getElementById("feedback").className = "feedback ok";
-        document.getElementById("answer").disabled = true;
+    const saved = localStorage.getItem(ACCESS_KEY);
+    if (saved) {
+        const data = JSON.parse(saved);
+        setAccessGranted(data.level, true);
     }
 });
 
-function checkAnswer() {
-    const value = document.getElementById("answer").value.trim().toUpperCase();
+function login() {
+    const user = document.getElementById("user").value.trim();
+    const pass = document.getElementById("pass").value.trim();
     const feedback = document.getElementById("feedback");
 
-    if (value === SECRET) {
-        localStorage.setItem(PUZZLE_KEY, "solved");
-        feedback.textContent = "ACESSO CONCEDIDO. TERMINAL DESBLOQUEADO.";
-        feedback.className = "feedback ok";
-        document.getElementById("answer").disabled = true;
-    } else {
-        feedback.textContent = "ACESSO NEGADO.";
+    if (!USERS[user] || USERS[user].password !== pass) {
+        feedback.textContent = "ACESSO NEGADO — credenciais inválidas.";
         feedback.className = "feedback error";
+        return;
     }
+
+    const level = USERS[user].level;
+    localStorage.setItem(ACCESS_KEY, JSON.stringify({ user, level }));
+    setAccessGranted(level);
+}
+
+function setAccessGranted(level, silent = false) {
+    const feedback = document.getElementById("feedback");
+    document.getElementById("level-label").textContent =
+        `NÍVEL ${level} AUTENTICADO`;
+
+    if (!silent) {
+        feedback.textContent =
+            `ACESSO CONCEDIDO. PERMISSÕES ${level} ATIVAS.`;
+        feedback.className = "feedback ok";
+    }
+
+    document.getElementById("user").disabled = true;
+    document.getElementById("pass").disabled = true;
 }
 </script>
+
 
 </body>
 </html>
