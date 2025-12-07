@@ -243,6 +243,7 @@ function transfer() {
 
     render();
     checkWin();
+    checkLose();
 }
 
 /* ===== DUMP ===== */
@@ -257,6 +258,7 @@ function dump() {
     src.value = 0;
     render();
     checkWin();
+    checkLose();
 }
 
 /* ===== CHECK WIN ===== */
@@ -278,6 +280,23 @@ function checkWin() {
         feedback.className = "feedback";
     }
 }
+
+function checkLose() {
+    const totalMemory = PROGRAMS.reduce((sum, p) => sum + p.value, 0);
+    const feedback = document.getElementById("feedback");
+
+    if (totalMemory < TARGET) {
+        feedback.textContent =
+            "FALHA CRÍTICA. MEMÓRIA INSUFICIENTE PARA EXECUTAR O DATA BREACH.";
+        feedback.className = "feedback error";
+
+        // Bloqueia ações
+        document.querySelectorAll("button, select").forEach(el => {
+            el.disabled = true;
+        });
+    }
+}
+
 
 function error(msg) {
     const f = document.getElementById("feedback");
