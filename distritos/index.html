@@ -330,13 +330,11 @@ Informações completas exigem credenciais de acesso elevadas.
 
 </div>
 <script>
-<script>
 const access = localStorage.getItem("spomega_access");
 
 if (!access) {
     window.location.href = "../acesso-negado/";
 }
-</script>
 
 function logout() {
     localStorage.removeItem("spomega_access");
