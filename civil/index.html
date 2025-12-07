@@ -119,12 +119,44 @@ footer {
     text-decoration: underline;
 }
 
+.session-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 24px;
+    background: #020617;
+    border-bottom: 1px solid #1e293b;
+    font-size: 0.8rem;
+}
+
+.session-bar span {
+    color: #9ca3af;
+}
+
+.session-bar button {
+    background: #020617;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-family: Consolas, monospace;
+}
+
+.session-bar button:hover {
+    background: rgba(239,68,68,0.15);
+}
+
+
 </style>
 </head>
 
 <body>
 
 <header  class="brand">
+  <div class="session-bar">
+	<span>Acesso civil autenticado</span>
+	<button onclick="logout()">Encerrar sessão</button>
+  </div>
   <div class="brand-title">
     Governo de São Paulo <span class="omega">Ω</span>
   </div>
@@ -145,7 +177,7 @@ footer {
 <div class="news-grid">
 
 <div class="card">
-<img src="../assets/img/news/news1.webp">
+<img src="../assets/img/news/noticianeotec.webp">
 <div class="content">
 <h3>Nova expansão do Jardim Neotec</h3>
 Investimentos em biotecnologia prometem qualidade de vida elevada.
@@ -205,6 +237,28 @@ Sua saúde integrada ao futuro.
 <footer>
 Portal Civil de São Paulo Ômega • Conteúdo regulamentado • Acesso público
 </footer>
+
+<script>
+const ACCESS_KEY = "spomega_access";
+
+const access = localStorage.getItem(ACCESS_KEY);
+
+if (!access) {
+    // Sem autenticação → volta ao terminal
+    window.location.href = "../index.html";
+} else {
+    const data = JSON.parse(access);
+    if (data.level !== "CIVIL") {
+        // Usuário autenticado, mas não civil
+        window.location.href = "../index.html";
+    }
+}
+function logout() {
+    localStorage.removeItem("spomega_access");
+    window.location.href = "../index.html";
+}
+</script>
+
 
 </body>
 </html>
