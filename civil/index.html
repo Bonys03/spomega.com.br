@@ -81,7 +81,7 @@ header.brand {
 
 .card img {
     width: 100%;
-    height: 1024px;
+    height: 260px;
     object-fit: cover;
 }
 
@@ -175,7 +175,7 @@ footer {
 <div class="news-grid">
 
 <div class="card">
-<img src="../assets/img/civil/news/noticianeotec.webp">
+<img src="../assets/img/civil/news/noticianeotec.png">
 <div class="content">
 <h3>Nova expansão do Jardim Neotec</h3>
 Investimentos em biotecnologia prometem qualidade de vida elevada.
@@ -238,23 +238,17 @@ Portal Civil de São Paulo Ômega • Conteúdo regulamentado • Acesso públic
 
 <script>
 const ACCESS_KEY = "spomega_access";
-
 const access = localStorage.getItem(ACCESS_KEY);
 
 if (!access) {
-    // Sem autenticação → volta ao terminal
-    window.location.href = "../index.html";
+    window.location.href = "../acesso-negado/";
 } else {
     const data = JSON.parse(access);
     if (data.level !== "CIVIL") {
-        // Usuário autenticado, mas não civil
-        window.location.href = "../index.html";
+        window.location.href = "../acesso-negado/";
     }
 }
-function logout() {
-    localStorage.removeItem("spomega_access");
-    window.location.href = "../index.html";
-}
+
 </script>
 
 
