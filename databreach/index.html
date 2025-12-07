@@ -211,4 +211,26 @@ function dump() {
 
 /* ===== CHECK WIN ===== */
 function checkWin() {
-    const feedback =
+    const feedback = document.getElementById("feedback");
+    if (PROGRAMS[0].value === TARGET) {
+        localStorage.setItem(DATA_KEY, "solved");
+        feedback.textContent =
+            "DATA BREACH CONCLUÍDO. SISTEMA COMPROMETIDO.";
+        feedback.className = "feedback ok";
+    } else {
+        feedback.textContent = "";
+        feedback.className = "feedback";
+    }
+}
+
+function error(msg) {
+    const f = document.getElementById("feedback");
+    f.textContent = msg;
+    f.className = "feedback error";
+}
+
+render();
+</script>
+
+</body>
+</html>
