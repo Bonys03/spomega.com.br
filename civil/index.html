@@ -18,6 +18,7 @@ header.brand {
     text-align: center;
     padding: 48px 16px 40px;
     border-bottom: 2px solid #1e293b;
+	margin-bottom: 0;
 
     background:
         linear-gradient(
@@ -102,22 +103,28 @@ footer {
     color: #64748b;
 }
 .civil-menu {
+    width: 100%;
     display: flex;
-    gap: 16px;
+    justify-content: center;
+    gap: 28px;
+
     padding: 12px 24px;
-    background: #0f172a;
+    background: #020617;
     border-bottom: 1px solid #1e293b;
 }
 
 .civil-menu a {
     color: #22d3ee;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
 .civil-menu a:hover {
     text-decoration: underline;
 }
+
 
 .session-bar {
     display: flex;
@@ -161,14 +168,13 @@ footer {
   <div class="brand-sub">
     Portal Civil • Informação, Serviços e Vida Urbana
   </div>
-  <nav class="civil-menu">
+</header>
+<nav class="civil-menu">
 	<a href="../distritos/">Distritos da Megalópole</a>
 	<a href="#">Serviços Públicos</a>
 	<a href="#">Eventos</a>
 	<a href="#">Transporte</a>
-  </nav>
-</header>
-
+</nav>
 
 <section class="section">
 <h2>Notícias da Cidade</h2>
