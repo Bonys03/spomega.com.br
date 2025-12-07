@@ -1,109 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>TUDOSEU TECNOLOGIAS — Terminal Corporativo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: Consolas, monospace;
-            background: radial-gradient(circle at top, #1a0000 0%, #000 75%);
-            color: #fecaca;
-        }
-
-        .terminal {
-            border: 1px solid #ef4444;
-            padding: 24px;
-            background: rgba(30, 0, 0, 0.9);
-            max-width: 820px;
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 0 25px rgba(239,68,68,.45);
-        }
-
-        .line {
-            margin: 8px 0;
-            white-space: pre-wrap;
-        }
-
-        .input-area {
-            margin-top: 18px;
-            display: flex;
-            gap: 10px;
-        }
-
-        input {
-            flex: 1;
-            padding: 8px;
-            background: #140000;
-            border: 1px solid #ef4444;
-            color: #fee2e2;
-        }
-
-        button {
-            padding: 8px 14px;
-            border: 1px solid #ef4444;
-            background: #100000;
-            color: #ef4444;
-            cursor: pointer;
-        }
-
-            button:hover {
-                background: rgba(239,68,68,.15);
-            }
-    </style>
+<meta charset="UTF-8">
+<title>TUDOSEU TECNOLOGIAS — Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Consolas, monospace;
+    background: radial-gradient(circle at top, #1a0000 0%, #000 75%);
+    color: #fee2e2;
+    padding: 20px;
+}
+.terminal {
+    width: 100%;
+    max-width: 820px;
+    border: 1px solid #ef4444;
+    background: rgba(30,0,0,0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 25px rgba(239,68,68,.45);
+}
+.screen {
+    max-height: 320px;
+    overflow-y: auto;
+    margin-bottom: 14px;
+}
+.line { margin: 6px 0; }
+.input-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.input-area span { color: #ef4444; }
+input {
+    flex: 1;
+    background: #140000;
+    border: none;
+    outline: none;
+    color: #fee2e2;
+    font-family: Consolas, monospace;
+}
+</style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="line">BOOTING TUDOSEU OS v12.88...</div>
-        <div class="line">Inicializando circuitos centrais...</div>
-        <div class="line">Sincronizando câmeras públicas...</div>
-        <div class="line">Carregando identidade do usuário...</div>
-        <div class="line" id="access"></div>
 
-        <div class="input-area">
-            <input id="cmd" placeholder="Digite um comando (ajuda)" autofocus>
-            <button onclick="run()">EXECUTAR</button>
-        </div>
-    </div>
+<div class="terminal">
+  <div id="screen" class="screen">
+    <div class="line">BOOTING TUDOSEU OS v12.88...</div>
+    <div class="line">Inicializando vigilância urbana...</div>
+    <div class="line">Sincronizando câmeras públicas...</div>
+    <div class="line">Sistema pronto.</div>
+  </div>
 
-    <script>
-        function run() {
-            let cmd = document.getElementById("cmd").value.trim().toLowerCase();
-            let out = document.getElementById("access");
+  <div class="input-area">
+    <span>&gt;</span>
+    <input id="cmd" autofocus placeholder="Digite um comando">
+  </div>
+</div>
 
-            if (cmd === "ajuda") {
-                out.textContent = "Comandos disponíveis: status, setores, segredos, desligar";
-            }
-            else if (cmd === "status") {
-                out.textContent = "TUDOSEU TECNOLOGIAS: vigilância total ativa.";
-            }
-            else if (cmd === "setores") {
-                out.textContent = "Câmeras, servidores públicos, IA urbana, drones.";
-            }
-            else if (cmd === "segredos") {
-                out.textContent = "ACESSO NEGADO — atividade registrada.";
-            }
-            else if (cmd === "desligar") {
-                out.textContent = "Sessão finalizada.";
-            }
-            else {
-                out.textContent = "Comando inválido.";
-            }
+<script>
+const screen = document.getElementById("screen");
+const input = document.getElementById("cmd");
 
-            document.getElementById("cmd").value = "";
-        }
+function print(txt) {
+    screen.innerHTML += `<div class="line">${txt}</div>`;
+    screen.scrollTop = screen.scrollHeight;
+}
+function run() {
+    const cmd = input.value.trim().toLowerCase();
+    if (!cmd) return;
+    print(`<span style="color:#ef4444">&gt;</span> ${cmd}`);
 
-        const input = document.getElementById("cmd");
-        input.addEventListener("keydown", e => {
-            if (e.key === "Enter") run();
-        });
-    </script>
+    if (cmd === "ajuda") print("Comandos: status, setores, segredos, desligar");
+    else if (cmd === "status") print("Vigilância total: ATIVA.");
+    else if (cmd === "setores") print("IA urbana, câmeras, drones, servidores públicos.");
+    else if (cmd === "segredos") print("ACESSO NEGADO. ATIVIDADE REGISTRADA.");
+    else if (cmd === "desligar") print("Encerrando sessão...");
+    else print("Comando inválido.");
+
+    input.value = "";
+}
+input.addEventListener("keydown", e => { if (e.key === "Enter") run(); });
+</script>
+
 </body>
-
 </html>

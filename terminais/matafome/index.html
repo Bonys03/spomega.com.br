@@ -1,111 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>MATA-FOME INDUSTRIAL — Terminal</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            font-family: Consolas, monospace;
-            background: #001300;
-            color: #7CFF6D;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .terminal {
-            border: 1px solid #7CFF6D;
-            background: rgba(0,20,0,.8);
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(124,255,109,.4);
-        }
-
-        .line {
-            margin: 8px 0;
-            white-space: pre-wrap;
-        }
-
-        .input-area {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        input {
-            flex: 1;
-            padding: 8px;
-            background: #020;
-            border: 1px solid #7CFF6D;
-            color: #DFFFD9;
-        }
-
-        button {
-            padding: 8px 12px;
-            border: 1px solid #7CFF6D;
-            background: #001300;
-            color: #7CFF6D;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>MATA-FOME — Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    font-family:Consolas,monospace;
+    background:radial-gradient(circle at top,#002b00 0%,#000 75%);
+    color:#d9f99d;padding:20px;
+}
+.terminal {
+    max-width:820px;width:100%;
+    border:1px solid #84cc16;
+    background:rgba(10,30,0,.9);
+    padding:20px;border-radius:10px;
+    box-shadow:0 0 25px rgba(132,204,22,.35);
+}
+.screen {max-height:320px;overflow-y:auto;margin-bottom:14px;}
+.line{margin:6px 0;}
+.input-area{display:flex;gap:6px;align-items:center;}
+.input-area span{color:#84cc16;}
+input{
+    flex:1;background:#0b1f00;border:none;outline:none;
+    color:#ecfccb;font-family:Consolas,monospace;
+}
+</style>
 </head>
 <body>
 
-    <div class="terminal">
-        <div class="line">MATA-FOME OS 5.1 — Sistema Alimentício Urbano</div>
-        <div class="line">Carregando catálogos de produtos...</div>
-        <div class="line">Sincronizando linhas de produção...</div>
-        <div class="line" id="result"></div>
+<div class="terminal">
+<div id="screen" class="screen">
+  <div class="line">MATA-FOME OS 5.1</div>
+  <div class="line">Ativando linhas de produção...</div>
+  <div class="line">Sistema alimentar operacional.</div>
+</div>
+<div class="input-area">
+  <span>&gt;</span>
+  <input id="cmd" autofocus placeholder="Digite um comando">
+</div>
+</div>
 
-        <div class="input-area">
-            <input id="cmd" placeholder="Digite um comando (ajuda)">
-            <button onclick="run()">EXECUTAR</button>
-        </div>
-    </div>
-
-    <script>
-        function run() {
-            let out = document.getElementById("result");
-            let cmd = document.getElementById("cmd").value.trim().toLowerCase();
-
-            switch (cmd) {
-                case "ajuda":
-                    out.textContent = "Comandos: estoque, calorias, segredos, recall, desligar";
-                    break;
-                case "estoque":
-                    out.textContent = "ESTOQUE: barrinhas sintéticas, carne impressa, água MF-02.";
-                    break;
-                case "calorias":
-                    out.textContent = "As calorias dos produtos foram padronizadas a 550 kcal.";
-                    break;
-                case "recall":
-                    out.textContent = "Alerta: 2 lotes apresentam contaminação leve.";
-                    break;
-                case "segredos":
-                    out.textContent = "Acesso negado: restrito ao corpo executivo.";
-                    break;
-                case "desligar":
-                    out.textContent = "Sistema alimentício encerrado.";
-                    break;
-                default:
-                    out.textContent = "Comando inválido.";
-            }
-
-            document.getElementById("cmd").value = "";
-        }
-        const input = document.getElementById("cmd");
-
-        input.addEventListener("keydown", function (e) {
-            if (e.key === "Enter") {
-                run();
-            }
-        });
-    </script>
-
+<script>
+const s=document.getElementById("screen"),i=document.getElementById("cmd");
+function p(t){s.innerHTML+=`<div class="line">${t}</div>`;s.scrollTop=s.scrollHeight;}
+function run(){
+ const c=i.value.trim().toLowerCase(); if(!c)return;
+ p(`<span style="color:#84cc16">&gt;</span> ${c}`);
+ if(c==="ajuda")p("Comandos: estoque, calorias, recall, segredos");
+ else if(c==="estoque")p("Barrinhas sintéticas, carne impressa, água MF-02.");
+ else if(c==="calorias")p("Todos os produtos padronizados em 550 kcal.");
+ else if(c==="recall")p("ALERTA: 2 lotes contaminados.");
+ else if(c==="segredos")p("Acesso restrito à diretoria.");
+ else p("Comando inválido.");
+ i.value="";
+}
+i.addEventListener("keydown",e=>{if(e.key==="Enter")run();});
+</script>
 </body>
 </html>
