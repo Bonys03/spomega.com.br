@@ -138,3 +138,8 @@ h1 {
   color: #ff3b3b;
   cursor: pointer;
 }
+.password-cell {
+  font-family: monospace;
+  color: #ffcf5c;
+  letter-spacing: 1px;
+}

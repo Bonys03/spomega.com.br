@@ -112,12 +112,14 @@ async function loadUsers() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${u.user}</td>
-      <td>${u.role}</td>
-      <td>
-        <button onclick="deleteUser('${u.user}')">DELETAR</button>
-      </td>
+        <td>${u.user}</td>
+        <td class="password-cell">${u.password}</td>
+        <td>${u.role}</td>
+        <td>
+            <button onclick="deleteUser('${u.user}')">DELETAR</button>
+        </td>
     `;
+
 
     tbody.appendChild(tr);
   });
