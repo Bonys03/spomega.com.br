@@ -53,6 +53,8 @@ function unlock() {
   setTimeout(() => {
     document.getElementById("lockscreen").style.display = "none";
     document.getElementById("system").classList.remove("hidden");
+    currentScreen = 0;
+    setTranslate(screenToX(currentScreen), false);
     loadPlayerData();
   }, 1200);
 }
@@ -92,7 +94,7 @@ function capitalize(s) {
 const screen = document.getElementById("screen");
 const swipePages = document.getElementById("swipePages");
 
-let currentScreen = 1; // 0 = status, 1 = home
+let currentScreen = 0; // 0 = status, 1 = home
 let isDragging = false;
 let startX = 0;
 let currentX = 0;
