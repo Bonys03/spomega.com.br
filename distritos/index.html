@@ -36,7 +36,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycby_iJzlBBdy1wa2DKNcF0Y7
 
     fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             action: "checkAccess",
             token: data.token,
