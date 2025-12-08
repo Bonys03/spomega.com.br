@@ -257,8 +257,7 @@ async function login() {
             return;
         }
 
-        // Salva token + nível no localStorage
-        localStorage.setItem(ACCESS_KEY, JSON.stringify({
+        localStorage.setItem("spomega_access", JSON.stringify({
             token: data.token,
             level: data.level
         }));
