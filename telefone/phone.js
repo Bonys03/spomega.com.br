@@ -1,15 +1,15 @@
-const pages = document.getElementById("pages");
 let currentPage = 0;
 
 function openApp(index) {
   currentPage = index;
-  updatePage();
+  setTranslate(pageToTranslate(currentPage), true);
 }
 
 function goHome() {
   currentPage = 0;
-  updatePage();
+  setTranslate(pageToTranslate(currentPage), true);
 }
+
 
 function updatePage() {
   setTranslate(pageToTranslate(currentPage), true);
@@ -30,44 +30,47 @@ let currentX = 0;
 let isDragging = false;
 let baseTranslate = 0;
 
-const maxPage = 2; // home + 2 apps
+const screen = document.getElementById("screen");
+const pages = document.getElementById("pages");
+const maxPage = 2;
+
+function pageToTranslate(page) {
+  return -page * screen.offsetWidth;
+}
 
 function setTranslate(x, animate = false) {
   pages.style.transition = animate ? "transform 0.3s ease" : "none";
   pages.style.transform = `translateX(${x}px)`;
 }
 
-function pageToTranslate(page) {
-  return -page * screen.offsetWidth;
-}
-
 /* START */
 screen.addEventListener("mousedown", e => {
+  e.preventDefault();
   isDragging = true;
   startX = e.clientX;
+  currentX = startX;
   baseTranslate = pageToTranslate(currentPage);
 });
 
-/* MOVE */
-screen.addEventListener("mousemove", e => {
+/* MOVE (GLOBAL) */
+document.addEventListener("mousemove", e => {
   if (!isDragging) return;
 
   currentX = e.clientX;
   let delta = currentX - startX;
 
-  // resistência nas bordas
   if (
     (currentPage === 0 && delta > 0) ||
     (currentPage === maxPage && delta < 0)
   ) {
-    delta *= 0.3;
+    delta *= 0.35; // resistência
   }
 
   setTranslate(baseTranslate + delta);
 });
 
 /* END */
-screen.addEventListener("mouseup", () => {
+document.addEventListener("mouseup", () => {
   if (!isDragging) return;
   isDragging = false;
 
@@ -83,10 +86,9 @@ screen.addEventListener("mouseup", () => {
   setTranslate(pageToTranslate(currentPage), true);
 });
 
-/* CANCEL (caso solte fora) */
-screen.addEventListener("mouseleave", () => {
-  if (!isDragging) return;
-  isDragging = false;
-  setTranslate(pageToTranslate(currentPage), true);
-});
+screen.addEventListener("mousedown", () => console.log("down"));
+document.addEventListener("mousemove", () => console.log("move"));
+document.addEventListener("mouseup", () => console.log("up"));
+
+
 

@@ -47,8 +47,15 @@ body {
 }
 
 .screen {
+  position: relative;
   height: calc(100% - 30px);
   overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.screen:active {
+  cursor: grabbing;
 }
 
 .pages {
