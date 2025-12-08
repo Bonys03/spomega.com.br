@@ -5,31 +5,59 @@
 <title>São Paulo Ômega — Portal Civil</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
+const ACCESS_KEY = "spomega_access";
+const API_URL = "https://script.google.com/macros/s/AKfycby8gcFcYuJejPXabTRNQA-4NNNMPZh5NI-kC0r4Hac-iYI78YDfH7Lu62cqWCPpKTEKFA/exec";
+
 (function () {
-    const access = localStorage.getItem("spomega_access");
+    const access = localStorage.getItem(ACCESS_KEY);
 
     if (!access) {
         window.location.replace("../acesso-negado/");
         return;
     }
 
+    let data;
     try {
-        const data = JSON.parse(access);
-        if (!["CIVIL","BETA","ALPHA","OMEGA"].includes(data.level)) {
-            window.location.replace("../acesso-negado/");
-            return;
-        }
+        data = JSON.parse(access);
     } catch {
         window.location.replace("../acesso-negado/");
         return;
     }
 
-    // ✅ acesso válido → libera o body
-    document.addEventListener("DOMContentLoaded", () => {
-        document.body.style.display = "block";
+    // verificação rápida no cliente (igual antes)
+    if (!["CIVIL","BETA","ALPHA","OMEGA"].includes(data.level)) {
+        window.location.replace("../acesso-negado/");
+        return;
+    }
+
+    if (!data.token) {
+        window.location.replace("../acesso-negado/");
+        return;
+    }
+
+    // verificação no servidor (Apps Script)
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "checkAccess",
+            token: data.token,
+            page: "civil"
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (!res.success || !res.allowed) {
+            window.location.replace("../acesso-negado/");
+        }
+    })
+    .catch(err => {
+        console.error("Erro ao validar acesso no servidor:", err);
+        window.location.replace("../acesso-negado/");
     });
 })();
 </script>
+
 
 <style>
 * { box-sizing: border-box; }
