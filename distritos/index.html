@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // ✅ acesso confirmado → mostra a página
-        document.body.style.display = "block";
+        document.body.style.visibility = "visible";
     })
     .catch(err => {
         console.error("Erro ao validar acesso:", err);
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
 * { box-sizing: border-box; }
 
 body {
-	display: none;
+	visibility: hidden;
     margin: 0;
     min-height: 100vh;
     background: radial-gradient(circle at top, #020617 0%, #000 75%);
