@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Dispositivo Pessoal</title>
-<link rel="stylesheet" href="phone.css">
+  <meta charset="UTF-8">
+  <title>Dispositivo Pessoal</title>
+  <link rel="stylesheet" href="phone.css">
 </head>
 
 <body>
 <div class="phone">
 
-  <!-- STATUS BAR (sempre visível) -->
+  <!-- BARRA DE STATUS -->
   <div class="status-bar">
     <div class="status-left">
       <span id="clockSmall">00:00</span>
@@ -21,39 +21,42 @@
     </div>
   </div>
 
-  <!-- TELA -->
+  <!-- ÁREA PRINCIPAL -->
   <div class="screen" id="screen">
 
-    <!-- TELAS SWIPE -->
+    <!-- TELAS SWIPE (STATUS ⇄ HOME) -->
     <div class="swipe-pages" id="swipePages">
 
-      <!-- TELA STATUS -->
+      <!-- TELA 0: STATUS -->
       <div class="page status-screen">
         <div class="clock-big" id="clockBig">00:00</div>
         <div class="temp">🌡️ 24°C</div>
         <div class="city">São Paulo Ômega</div>
       </div>
 
-      <!-- TELA HOME -->
+      <!-- TELA 1: HOME (ÍCONES) -->
       <div class="page home-screen">
         <div class="apps">
           <div class="app" onclick="openApp('messages')">
-            <img src="icons/messages.webp">
+            <!-- troque pela sua imagem -->
+            <img src="icons/messages.webp" alt="">
             <span>Mensagens</span>
           </div>
 
           <div class="app" onclick="openApp('hack')">
-            <img src="icons/hack.webp">
+            <!-- troque pela sua imagem -->
+            <img src="icons/hack.webp" alt="">
             <span>Hack</span>
           </div>
         </div>
       </div>
+
     </div>
 
-    <!-- APP: MENSAGENS -->
-    <div class="app-layer hidden" id="appMessages">
+    <!-- APP: MENSAGENS (overlay) -->
+    <div class="app-layer" id="appMessages">
       <header>
-        Mensagens
+        <span>Mensagens</span>
         <button onclick="closeApp()">✕</button>
       </header>
       <div class="app-content">
@@ -63,10 +66,10 @@
       </div>
     </div>
 
-    <!-- APP: HACK -->
-    <div class="app-layer hidden" id="appHack">
+    <!-- APP: HACK (overlay) -->
+    <div class="app-layer" id="appHack">
       <header>
-        Hack
+        <span>Hack</span>
         <button onclick="closeApp()">✕</button>
       </header>
       <div class="app-content">

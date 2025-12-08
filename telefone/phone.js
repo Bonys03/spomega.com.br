@@ -1,27 +1,31 @@
 const screen = document.getElementById("screen");
 const swipePages = document.getElementById("swipePages");
 
-let currentScreen = 1; // começa na home
+let currentScreen = 1; // 0 = status, 1 = home
+let isDragging = false;
 let startX = 0;
 let currentX = 0;
-let isDragging = false;
 
 /* CLOCK */
+
 function updateClock() {
   const now = new Date();
   const time = now.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit"
   });
+
   document.getElementById("clockSmall").textContent = time;
   document.getElementById("clockBig").textContent = time;
 }
+
 setInterval(updateClock, 1000);
 updateClock();
 
-/* SWIPE */
-function screenToX(i) {
-  return -i * screen.offsetWidth;
+/* SWIPE ENTRE STATUS E HOME */
+
+function screenToX(idx) {
+  return -idx * screen.offsetWidth;
 }
 
 function setTranslate(x, animate = false) {
@@ -29,25 +33,28 @@ function setTranslate(x, animate = false) {
   swipePages.style.transform = `translateX(${x}px)`;
 }
 
-/* START */
+// start
 screen.addEventListener("mousedown", e => {
-  if (!document.querySelector(".app-layer.hidden") === false) return;
+  // se algum app estiver aberto, não faz swipe
+  if (document.querySelector(".app-layer.active")) return;
 
   isDragging = true;
   startX = e.clientX;
   currentX = startX;
 });
 
-/* MOVE */
+// move
 document.addEventListener("mousemove", e => {
   if (!isDragging) return;
 
   currentX = e.clientX;
-  let delta = currentX - startX;
-  setTranslate(screenToX(currentScreen) + delta);
+  const delta = currentX - startX;
+  const base = screenToX(currentScreen);
+
+  setTranslate(base + delta, false);
 });
 
-/* END */
+// end
 document.addEventListener("mouseup", () => {
   if (!isDragging) return;
   isDragging = false;
@@ -55,24 +62,35 @@ document.addEventListener("mouseup", () => {
   const delta = currentX - startX;
   const threshold = screen.offsetWidth * 0.25;
 
-  if (delta < -threshold && currentScreen < 1) currentScreen++;
-  if (delta > threshold && currentScreen > 0) currentScreen--;
+  if (delta < -threshold && currentScreen < 1) {
+    currentScreen++;
+  } else if (delta > threshold && currentScreen > 0) {
+    currentScreen--;
+  }
 
   setTranslate(screenToX(currentScreen), true);
 });
 
-/* APPS */
+// inicial
+setTranslate(screenToX(currentScreen), false);
+
+/* APPS EM OVERLAY */
+
 function openApp(name) {
-  document.getElementById("app" + capitalize(name)).classList.remove("hidden");
+  closeApp(); // fecha qualquer outro app
+  const id = "app" + capitalize(name);
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add("active");
+  }
 }
 
 function closeApp() {
-  document.querySelectorAll(".app-layer").forEach(a => a.classList.add("hidden"));
+  document.querySelectorAll(".app-layer").forEach(el => {
+    el.classList.remove("active");
+  });
 }
 
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
-
-/* INIT */
-setTranslate(screenToX(currentScreen), false);
