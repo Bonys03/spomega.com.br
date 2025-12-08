@@ -12,7 +12,7 @@ function goHome() {
 }
 
 function updatePage() {
-  pages.style.transform = `translateX(-${currentPage * 100}%)`;
+  setTranslate(pageToTranslate(currentPage), true);
 }
 
 /* CLOCK */
@@ -25,22 +25,68 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* SWIPE (mouse drag) */
-let startX = null;
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+let baseTranslate = 0;
 
-const screen = document.getElementById("screen");
+const maxPage = 2; // home + 2 apps
 
+function setTranslate(x, animate = false) {
+  pages.style.transition = animate ? "transform 0.3s ease" : "none";
+  pages.style.transform = `translateX(${x}px)`;
+}
+
+function pageToTranslate(page) {
+  return -page * screen.offsetWidth;
+}
+
+/* START */
 screen.addEventListener("mousedown", e => {
+  isDragging = true;
   startX = e.clientX;
+  baseTranslate = pageToTranslate(currentPage);
 });
 
-screen.addEventListener("mouseup", e => {
-  if (startX === null) return;
+/* MOVE */
+screen.addEventListener("mousemove", e => {
+  if (!isDragging) return;
 
-  const diff = e.clientX - startX;
+  currentX = e.clientX;
+  let delta = currentX - startX;
 
-  if (diff > 50 && currentPage > 0) currentPage--;
-  if (diff < -50 && currentPage < 2) currentPage++;
+  // resistência nas bordas
+  if (
+    (currentPage === 0 && delta > 0) ||
+    (currentPage === maxPage && delta < 0)
+  ) {
+    delta *= 0.3;
+  }
 
-  updatePage();
-  startX = null;
+  setTranslate(baseTranslate + delta);
 });
+
+/* END */
+screen.addEventListener("mouseup", () => {
+  if (!isDragging) return;
+  isDragging = false;
+
+  const delta = currentX - startX;
+  const threshold = screen.offsetWidth * 0.25;
+
+  if (delta < -threshold && currentPage < maxPage) {
+    currentPage++;
+  } else if (delta > threshold && currentPage > 0) {
+    currentPage--;
+  }
+
+  setTranslate(pageToTranslate(currentPage), true);
+});
+
+/* CANCEL (caso solte fora) */
+screen.addEventListener("mouseleave", () => {
+  if (!isDragging) return;
+  isDragging = false;
+  setTranslate(pageToTranslate(currentPage), true);
+});
+
