@@ -9,49 +9,58 @@ const ACCESS_KEY = "spomega_access";
 const API_URL = "https://script.google.com/macros/s/AKfycbyell6wEMmMXRB-PazRK9n7M2dW0h3Cd5gzyCT7PPQ_3IUEM32gSC80UK2VcGLO95QMtw/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const accessRaw = localStorage.getItem(ACCESS_KEY);
+  const raw = localStorage.getItem(ACCESS_KEY);
 
-    if (!accessRaw) {
-        window.location.replace("../acesso-negado/");
-        return;
-    }
+  if (!raw) {
+    window.location.replace("../");
+    return;
+  }
 
-    let access;
-    try {
-        access = JSON.parse(accessRaw);
-    } catch {
-        window.location.replace("../acesso-negado/");
-        return;
-    }
+  let access;
+  try {
+    access = JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(ACCESS_KEY);
+    window.location.replace("../");
+    return;
+  }
 
-    if (!access.token || !access.level) {
-        window.location.replace("../acesso-negado/");
-        return;
-    }
-
-    // 🔐 validação REAL no servidor
-    fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            action: "checkAccess",
-            token: access.token,
-            page: "distritos"
-        })
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "checkAccess",
+      token: access.token,
+      page: "distritos"
     })
-    .then(r => r.json())
-    .then(res => {
-        if (!res.success || !res.allowed) {
-            window.location.replace("../acesso-negado/");
-            return;
-        }
+  })
+  .then(r => r.json())
+  .then(res => {
+    // ✅ AUTORIZADO
+    if (res.status === "ok") {
+      document.body.style.visibility = "visible";
+      return;
+    }
 
-        // ✅ acesso confirmado → mostra a página
-        document.body.style.visibility = "visible";
-    })
-    .catch(err => {
-        console.error("Erro ao validar acesso:", err);
-        window.location.replace("../acesso-negado/");
-    });
+    // 🔒 BLOQUEADO PELO MESTRE
+    if (res.status === "locked") {
+      window.location.replace("../lockdown/");
+      return;
+    }
+
+    // 🚫 SEM PERMISSÃO
+    if (res.status === "forbidden") {
+      window.location.replace("../acesso-negado/");
+      return;
+    }
+
+    // 🔑 SESSÃO INVÁLIDA
+    localStorage.removeItem(ACCESS_KEY);
+    window.location.replace("../");
+  })
+  .catch(err => {
+    console.error("Erro checkAccess:", err);
+    window.location.replace("../");
+  });
 });
 </script>
 

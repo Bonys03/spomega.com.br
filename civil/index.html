@@ -9,59 +9,61 @@ const ACCESS_KEY = "spomega_access";
 const API_URL = "https://script.google.com/macros/s/AKfycbyell6wEMmMXRB-PazRK9n7M2dW0h3Cd5gzyCT7PPQ_3IUEM32gSC80UK2VcGLO95QMtw/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const accessRaw = localStorage.getItem(ACCESS_KEY);
+  const raw = localStorage.getItem(ACCESS_KEY);
 
-    if (!accessRaw) {
-        window.location.replace("../acesso-negado/");
-        return;
-    }
+  if (!raw) {
+    window.location.replace("../");
+    return;
+  }
 
-    let access;
-    try {
-        access = JSON.parse(accessRaw);
-    } catch {
-        window.location.replace("../acesso-negado/");
-        return;
-    }
+  let access;
+  try {
+    access = JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(ACCESS_KEY);
+    window.location.replace("../");
+    return;
+  }
 
-    if (!access.token || !access.level) {
-        window.location.replace("../acesso-negado/");
-        return;
-    }
-
-    // 🔐 validação REAL no servidor
-    fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            action: "checkAccess",
-            token: access.token,
-            page: "civil"
-        })
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "checkAccess",
+      token: access.token,
+      page: "civil"
     })
-    .then(r => r.json())
-    .then(res => {
-        if (res.status === "ok") {
-            document.body.style.visibility = "visible";
-            return;
-        }
+  })
+  .then(r => r.json())
+  .then(res => {
+    // ✅ AUTORIZADO
+    if (res.status === "ok") {
+      document.body.style.visibility = "visible";
+      return;
+    }
 
-        if (res.status === "locked") {
-            window.location.replace("../lockdown/");
-            return;
-        }
+    // 🔒 BLOQUEADO PELO MESTRE
+    if (res.status === "locked") {
+      window.location.replace("../lockdown/");
+      return;
+    }
 
-        if (res.status === "forbidden") {
-            window.location.replace("../acesso-negado/");
-            return;
-        }
+    // 🚫 SEM PERMISSÃO
+    if (res.status === "forbidden") {
+      window.location.replace("../acesso-negado/");
+      return;
+    }
 
-        // unauthenticated
-        localStorage.removeItem("spomega_access");
-        window.location.replace("../");
-        });
-
+    // 🔑 SESSÃO INVÁLIDA
+    localStorage.removeItem(ACCESS_KEY);
+    window.location.replace("../");
+  })
+  .catch(err => {
+    console.error("Erro checkAccess:", err);
+    window.location.replace("../");
+  });
 });
 </script>
+
 
 
 
@@ -69,11 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
 * { box-sizing: border-box; }
 
 body {
+    visibility: hidden;
     margin: 0;
     font-family: Arial, sans-serif;
     background: #020617;
     color: #e5e7eb;
-	display: none;
 }
 
 header.brand {
