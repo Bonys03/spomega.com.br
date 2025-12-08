@@ -1,4 +1,4 @@
-const API_URL = "COLE_AQUI_URL_DO_APPS_SCRIPT";
+const API_URL = "https://script.google.com/macros/s/AKfycbyell6wEMmMXRB-PazRK9n7M2dW0h3Cd5gzyCT7PPQ_3IUEM32gSC80UK2VcGLO95QMtw/exec";
 
 async function loadStatus() {
   const adminToken = document.getElementById("adminToken").value;
