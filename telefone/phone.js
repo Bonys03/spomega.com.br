@@ -47,8 +47,14 @@ async function unlock() {
       return;
     }
 
-    currentPlayer = data.player;
+    // só nome agora
+    currentPlayer = {
+      name: data.player.name
+    };
+
+    // guarda o PIN para o polling
     window.playerPin = pin;
+
     feedback.textContent = "Desbloqueando...";
 
     setTimeout(() => {
@@ -65,19 +71,10 @@ async function unlock() {
   }
 }
 
-
 function loadPlayerData() {
   document.getElementById("playerName").textContent = currentPlayer.name;
-
   const msgBox = document.getElementById("messagesContent");
   msgBox.innerHTML = "";
-
-  currentPlayer.messages.forEach(m => {
-    const div = document.createElement("div");
-    div.className = "msg incoming";
-    div.textContent = m;
-    msgBox.appendChild(div);
-  });
 }
 
 /* ===== APPS ===== */
