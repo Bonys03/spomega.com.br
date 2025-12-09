@@ -185,7 +185,9 @@ body {
   inset: 0;
   background: #05080f;
   z-index: 10;
-  padding: 10px;
+  padding: 6px;
+  border-bottom: 1px solid rgba(0,255,255,0.3);
+  box-shadow: 0 4px 10px rgba(0,255,255,0.15);
   display: none;
 }
 
@@ -205,6 +207,37 @@ body {
   height: calc(100% - 40px);
   overflow-y: auto;
   padding-right: 6px;
+}
+
+/* ===== SCROLLBAR CYBERPUNK ===== */
+
+#messagesContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+#messagesContent::-webkit-scrollbar-track {
+  background: rgba(0, 255, 255, 0.08);
+  border-left: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+#messagesContent::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #00ffff,
+    #ff00ff
+  );
+  border-radius: 6px;
+  box-shadow:
+    0 0 6px rgba(0,255,255,0.8),
+    inset 0 0 4px rgba(0,0,0,0.6);
+}
+
+#messagesContent::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #ff00ff,
+    #00ffff
+  );
 }
 
 
@@ -243,4 +276,35 @@ body {
   margin-left: auto; /* empurra para direita */
 }
 
+/* ===== BOTÃO FECHAR APP — CYBERPUNK ===== */
+
+.btn-close {
+  background: transparent;
+  border: 1px solid #0ff;
+  color: #0ff;
+  font-size: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 0 8px rgba(0,255,255,0.6),
+    inset 0 0 6px rgba(0,255,255,0.3);
+
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  color: #ff00ff;
+  border-color: #ff00ff;
+  box-shadow:
+    0 0 12px rgba(255,0,255,0.9),
+    inset 0 0 8px rgba(255,0,255,0.4);
+  transform: rotate(-15deg);
+}
 
