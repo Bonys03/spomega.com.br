@@ -191,7 +191,7 @@ body {
   display: none;
 }
 .app-layer .app-content {
-  height: calc(100% - 50px); /* desconta o header */
+  height: calc(100% - 60px); /* desconta o header */
   overflow: hidden;          /* impede que os filhos estourem */
   position: relative;
 }
@@ -277,11 +277,8 @@ body {
 }
 
 #chatHeader {
-  padding: 10px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  border-bottom: 1px solid rgba(0,255,255,0.3);
+  flex-shrink: 0;
+  position: relative;
 }
 
 #chatMessages {
@@ -291,13 +288,14 @@ body {
 }
 
 #chatView {
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 #conversationList,
 #chatView {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
