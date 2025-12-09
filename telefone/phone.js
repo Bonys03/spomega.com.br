@@ -146,39 +146,3 @@ document.addEventListener("mouseup", () => {
 
   setTranslate(screenToX(currentScreen), true);
 });
-
-let lastMessageId = 0;
-
-setInterval(checkMessages, 4000);
-
-function checkMessages() {
-  if (!currentPlayer) return;
-
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "getMessages",
-      player: currentPlayer.name,
-      lastId: lastMessageId
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    data.messages.forEach(msg => {
-      lastMessageId = msg.id;
-      showMasterMessage(msg);
-    });
-  });
-}
-
-function showMasterMessage(msg) {
-  const box = document.getElementById("messagesContent");
-
-  const div = document.createElement("div");
-  div.className = "msg incoming master";
-  div.textContent = `[SISTEMA] ${msg.text}`;
-
-  box.appendChild(div);
-
-  // aqui depois entra notificação
-}

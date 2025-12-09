@@ -168,24 +168,3 @@ async function deleteUser(user) {
   loadUsers();
 }
 
-function sendMasterMessage() {
-  const to = document.getElementById("msgTo").value;
-  const text = document.getElementById("msgText").value;
-
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "sendMessage",
-      from: "MASTER",
-      to,
-      text
-    })
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      alert("Mensagem enviada");
-      document.getElementById("msgText").value = "";
-    }
-  });
-}
