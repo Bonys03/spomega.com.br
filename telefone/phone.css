@@ -1,6 +1,4 @@
-.hidden {
-  display: none;
-}
+
 
 body {
   margin: 0;
@@ -298,6 +296,7 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
 }
 
 
@@ -450,3 +449,6 @@ body {
   gap: 8px;
 }
 
+.hidden {
+  display: none !important;
+}

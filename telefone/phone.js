@@ -299,10 +299,12 @@ function openChat(sender) {
 
   document.getElementById("conversationList").classList.add("hidden");
   document.getElementById("chatView").classList.remove("hidden");
+
   document.getElementById("chatTitle").textContent = sender;
 
   renderChatMessages();
 }
+
 
 
 function renderChatMessages() {
