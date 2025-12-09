@@ -302,7 +302,7 @@ body {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  padding-bottom: max(40px, 5vh);
+  padding-bottom: 40px;
 }
 
 .conversation-item {
