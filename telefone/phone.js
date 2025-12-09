@@ -171,7 +171,7 @@ async function pollMessages() {
     const box = document.getElementById("messagesContent");
 
     data.messages.forEach(m => {
-      appendMessage(m.message, m.timestamp);
+      appendMessage(m.sender, m.message, m.timestamp);
     });
 
     box.scrollTop = box.scrollHeight;
@@ -198,7 +198,7 @@ async function loadMessageHistory() {
     if (!data.success) return;
 
     data.messages.forEach(m => {
-      appendMessage(m.message, m.timestamp);
+      appendMessage(m.sender, m.message, m.timestamp);
     });
 
     // começa já no final do histórico
@@ -214,11 +214,15 @@ async function loadMessageHistory() {
   }
 }
 
-function appendMessage(text, timestamp) {
+function appendMessage(sender, text, timestamp) {
   const box = document.getElementById("messagesContent");
 
   const msg = document.createElement("div");
   msg.className = "msg incoming";
+
+  const from = document.createElement("div");
+  from.className = "msg-sender";
+  from.textContent = sender || "Sistema";
 
   const content = document.createElement("div");
   content.className = "msg-text";
@@ -233,10 +237,11 @@ function appendMessage(text, timestamp) {
     minute: "2-digit"
   });
 
+  msg.appendChild(from);
   msg.appendChild(content);
   msg.appendChild(time);
   box.appendChild(msg);
 
-  // ✅ auto-scroll seguro
   box.scrollTop = box.scrollHeight;
 }
+

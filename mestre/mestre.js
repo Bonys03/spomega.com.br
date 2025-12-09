@@ -171,6 +171,7 @@ async function sendMessage() {
   const adminToken = document.getElementById("adminToken").value;
   const pin = document.getElementById("msgPin").value.trim();
   const message = document.getElementById("msgText").value.trim();
+  const sender = document.getElementById("msgSender").value.trim() || "Sistema";
 
   if (!pin || !message) {
     alert("Informe o PIN e a mensagem");
@@ -183,10 +184,12 @@ async function sendMessage() {
       action: "adminSendMessage",
       adminToken,
       pin,
+      sender,       // ✅ novo campo
       message
     })
   });
 
   document.getElementById("msgText").value = "";
 }
+
 
