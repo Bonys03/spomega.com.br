@@ -48,6 +48,7 @@ async function unlock() {
     }
 
     currentPlayer = data.player;
+    window.playerPin = pin;
     feedback.textContent = "Desbloqueando...";
 
     setTimeout(() => {
@@ -152,3 +153,34 @@ document.addEventListener("mouseup", () => {
 
   setTranslate(screenToX(currentScreen), true);
 });
+async function pollMessages() {
+  if (!window.playerPin) return;
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "phonePollMessages",
+        pin: window.playerPin
+      })
+    });
+
+    const data = await res.json();
+    if (!data.success || !data.messages.length) return;
+
+    const box = document.getElementById("messagesContent");
+
+    data.messages.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "msg incoming";
+      div.textContent = m.message;
+      box.appendChild(div);
+    });
+
+    box.scrollTop = box.scrollHeight;
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+setInterval(pollMessages, 4000); // a cada 4 segundos

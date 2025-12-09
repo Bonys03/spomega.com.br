@@ -167,4 +167,26 @@ async function deleteUser(user) {
 
   loadUsers();
 }
+async function sendMessage() {
+  const adminToken = document.getElementById("adminToken").value;
+  const pin = document.getElementById("msgPin").value.trim();
+  const message = document.getElementById("msgText").value.trim();
+
+  if (!pin || !message) {
+    alert("Informe o PIN e a mensagem");
+    return;
+  }
+
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "adminSendMessage",
+      adminToken,
+      pin,
+      message
+    })
+  });
+
+  document.getElementById("msgText").value = "";
+}
 
