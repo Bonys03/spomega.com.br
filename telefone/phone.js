@@ -48,12 +48,17 @@ async function unlockPhone() {
 
   currentPin = pin;
 
-  document.getElementById("lockedScreen").style.display = "none";
-  document.getElementById("homeScreen").style.display = "block";
+  // 🔴 IDs corretos, de acordo com o seu HTML
+  const lock = document.getElementById("lockscreen");
+  const system = document.getElementById("system");
+
+  if (lock) lock.classList.add("hidden");
+  if (system) system.classList.remove("hidden");
 
   await loadHistory();
   startPolling();
 }
+
 
 // ===============================
 // LOAD FULL HISTORY
