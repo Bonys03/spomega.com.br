@@ -1,13 +1,15 @@
+// ===============================
+// CONFIG
+// ===============================
 const API_URL = "https://script.google.com/macros/s/AKfycbyell6wEMmMXRB-PazRK9n7M2dW0h3Cd5gzyCT7PPQ_3IUEM32gSC80UK2VcGLO95QMtw/exec";
-let currentPlayer = null;
-let pollingStarted = false;
-let allMessages = [];          // histórico completo
-let conversations = {};        // agrupado por sender
-let currentChat = null;
+let currentPin = null;
+let conversations = {};   // { npc: [ {direction, message, timestamp} ] }
+let currentNPC = null;
+let pollingTimer = null;
 
-
-/* ===== RELOGIOS ===== */
-
+// ===============================
+// CLOCKS
+// ===============================
 function updateClocks() {
   const now = new Date();
   const time = now.toLocaleTimeString("pt-BR", {
@@ -23,149 +25,163 @@ function updateClocks() {
 setInterval(updateClocks, 1000);
 updateClocks();
 
-/* ===== DESBLOQUEIO ===== */
+// ===============================
+// UNLOCK PHONE
+// ===============================
+async function unlockPhone() {
+  const pin = document.getElementById("pinInput").value.trim();
+  if (!pin) return;
 
-async function unlock() {
-  const pin = document.getElementById("pinInput").value;
-  const feedback = document.getElementById("lockFeedback");
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "phoneUnlock",
+      pin
+    })
+  });
 
-  if (!pin) {
-    feedback.textContent = "Digite a senha";
+  const data = await res.json();
+  if (!data.success) {
+    alert("PIN inválido");
     return;
   }
 
-  feedback.textContent = "Verificando acesso...";
+  currentPin = pin;
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "phoneUnlock",
-        pin
-      })
+  document.getElementById("lockedScreen").style.display = "none";
+  document.getElementById("homeScreen").style.display = "block";
+
+  await loadHistory();
+  startPolling();
+}
+
+// ===============================
+// LOAD FULL HISTORY
+// ===============================
+async function loadHistory() {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "phoneGetHistory",
+      pin: currentPin
+    })
+  });
+
+  const data = await res.json();
+  if (!data.success) return;
+
+  conversations = {};
+
+  data.messages.forEach(m => {
+    const npc = m.sender;
+    if (!conversations[npc]) conversations[npc] = [];
+
+    conversations[npc].push({
+      direction: m.direction, // IN / OUT
+      message: m.message,
+      timestamp: m.timestamp
     });
+  });
 
-    const data = await res.json();
-
-    if (!data.success) {
-      feedback.textContent = "Senha inválida";
-      return;
-    }
-
-    // só nome agora
-    currentPlayer = {
-      name: data.player.name
-    };
-
-    // guarda o PIN para o polling
-    window.playerPin = pin;
-
-    feedback.textContent = "Desbloqueando...";
-
-    setTimeout(() => {
-      document.getElementById("lockscreen").style.display = "none";
-      document.getElementById("system").classList.remove("hidden");
-      currentScreen = 0;
-      setTranslate(screenToX(currentScreen), false);
-      loadPlayerData();
-      loadMessageHistory();
-    }, 1200);
-
-
-  } catch (err) {
-    console.error(err);
-    feedback.textContent = "Erro de conexão";
-  }
+  renderNPCList();
 }
 
-function loadPlayerData() {
-  document.getElementById("playerName").textContent = currentPlayer.name;
-}
+// ===============================
+// NPC LIST
+// ===============================
+function renderNPCList() {
+  const list = document.getElementById("conversationList");
+  list.innerHTML = "";
 
-
-/* ===== APPS ===== */
-
-function openApp(name) {
-  closeApp();
-  document.getElementById("app" + capitalize(name)).classList.add("active");
-}
-
-function closeApp() {
-  document.querySelectorAll(".app-layer").forEach(a => {
-    a.classList.remove("active");
+  Object.keys(conversations).forEach(npc => {
+    const div = document.createElement("div");
+    div.className = "npc-entry";
+    div.textContent = npc;
+    div.onclick = () => openNPCChat(npc);
+    list.appendChild(div);
   });
 }
 
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-/* ===== SWIPE STATUS ⇄ HOME ===== */
+function openNPCChat(npc) {
+  currentNPC = npc;
 
-const screen = document.getElementById("screen");
-const swipePages = document.getElementById("swipePages");
+  document.getElementById("conversationList").classList.add("hidden");
+  document.getElementById("chatView").classList.remove("hidden");
+  document.getElementById("chatTitle").textContent = npc;
 
-let currentScreen = 0; // 0 = status, 1 = home
-let isDragging = false;
-let startX = 0;
-let currentX = 0;
-
-function screenToX(idx) {
-  return -idx * screen.offsetWidth;
+  renderChatMessages();
 }
 
-function setTranslate(x, animate = false) {
-  swipePages.style.transition = animate ? "transform 0.3s ease" : "none";
-  swipePages.style.transform = `translateX(${x}px)`;
+function closeChat() {
+  currentNPC = null;
+
+  document.getElementById("chatView").classList.add("hidden");
+  document.getElementById("conversationList").classList.remove("hidden");
 }
 
-// inicial
-setTranslate(screenToX(currentScreen), false);
+// ===============================
+// CHAT RENDER
+// ===============================
+function renderChatMessages() {
+  const box = document.getElementById("chatMessages");
+  box.innerHTML = "";
 
-// start drag
-screen.addEventListener("mousedown", e => {
-  // se algum app estiver aberto, não permitir swipe
-  if (document.querySelector(".app-layer.active")) return;
+  const msgs = conversations[currentNPC] || [];
 
-  isDragging = true;
-  startX = e.clientX;
-  currentX = startX;
-});
+  msgs.forEach(m => {
+    if (m.direction === "IN") {
+      appendOutgoing("Você", m.message, m.timestamp, box);
+    } else {
+      appendIncoming(currentNPC, m.message, m.timestamp, box);
+    }
+  });
 
-// move
-document.addEventListener("mousemove", e => {
-  if (!isDragging) return;
+  box.scrollTop = box.scrollHeight;
+}
 
-  currentX = e.clientX;
-  const delta = currentX - startX;
-  setTranslate(screenToX(currentScreen) + delta, false);
-});
+// ===============================
+// SEND REPLY
+// ===============================
+async function sendReply() {
+  const field = document.getElementById("replyText");
+  const text = field.value.trim();
+  if (!text || !currentNPC) return;
 
-// end
-document.addEventListener("mouseup", () => {
-  if (!isDragging) return;
-  isDragging = false;
+  field.value = "";
 
-  const delta = currentX - startX;
-  const threshold = screen.offsetWidth * 0.25;
+  // render otimista
+  conversations[currentNPC].push({
+    direction: "IN",
+    message: text,
+    timestamp: Date.now()
+  });
 
-  if (delta < -threshold && currentScreen < 1) {
-    currentScreen++;
-  } else if (delta > threshold && currentScreen > 0) {
-    currentScreen--;
-  }
+  renderChatMessages();
 
-  setTranslate(screenToX(currentScreen), true);
-});
+  // envia ao backend
+  await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "phoneSendReply",
+      pin: currentPin,
+      npc: currentNPC,
+      message: text
+    })
+  });
+}
 
-async function pollMessages() {
-  if (!window.playerPin) return;
+// ===============================
+// POLLING (ONLY OUT)
+// ===============================
+function startPolling() {
+  if (pollingTimer) return;
 
-  try {
+  pollingTimer = setInterval(async () => {
     const res = await fetch(API_URL, {
       method: "POST",
       body: JSON.stringify({
         action: "phonePollMessages",
-        pin: window.playerPin
+        pin: currentPin
       })
     });
 
@@ -173,179 +189,56 @@ async function pollMessages() {
     if (!data.success || !data.messages.length) return;
 
     data.messages.forEach(m => {
+      const npc = m.sender;
+      if (!conversations[npc]) conversations[npc] = [];
 
-      // 🚫 IGNORA mensagens enviadas pelo jogador (echo)
-      if (m.direction === "IN") {
-        return;
-      }
+      conversations[npc].push({
+        direction: "OUT",
+        message: m.message,
+        timestamp: m.timestamp
+      });
 
-      // adiciona ao histórico
-      allMessages.push(m);
-
-      if (!conversations[m.sender]) {
-        conversations[m.sender] = [];
-      }
-      conversations[m.sender].push(m);
-
-      // renderiza apenas se o chat estiver aberto
-      if (currentChat === m.sender) {
-        appendMessage(m.sender, m.message, m.timestamp);
+      if (currentNPC === npc) {
+        renderChatMessages();
       }
     });
 
-    renderConversationList();
-
-  } catch (err) {
-    console.error("Erro no polling:", err);
-  }
+    renderNPCList();
+  }, 3000);
 }
 
+// ===============================
+// MESSAGE BUILDERS
+// ===============================
+function appendIncoming(sender, msg, time, box) {
+  const div = document.createElement("div");
+  div.className = "msg incoming";
 
+  div.innerHTML = `
+    <div class="msg-sender">${sender}</div>
+    <div class="msg-text">${msg}</div>
+    <div class="msg-time">${formatTime(time)}</div>
+  `;
 
-async function loadMessageHistory() {
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "phoneGetHistory",
-        pin: window.playerPin
-      })
-    });
-
-    const data = await res.json();
-    if (!data.success) return;
-
-    allMessages = data.messages;
-
-    conversations = {};
-    allMessages.forEach(m => {
-      if (!conversations[m.sender]) conversations[m.sender] = [];
-      conversations[m.sender].push(m);
-    });
-
-    renderConversationList();
-
-    if (!pollingStarted) {
-      pollingStarted = true;
-      setInterval(pollMessages, 4000);
-    }
-
-  } catch (err) {
-    console.error(err);
-  }
+  box.appendChild(div);
 }
 
+function appendOutgoing(sender, msg, time, box) {
+  const div = document.createElement("div");
+  div.className = "msg outgoing";
 
-function appendMessage(sender, text, timestamp, container) {
-  const box = container || document.getElementById("chatMessages");
+  div.innerHTML = `
+    <div class="msg-sender">${sender}</div>
+    <div class="msg-text">${msg}</div>
+    <div class="msg-time">${formatTime(time)}</div>
+  `;
 
-  if (!box) return;
+  box.appendChild(div);
+}
 
-  const msg = document.createElement("div");
-  msg.className = "msg incoming";
-
-  const from = document.createElement("div");
-  from.className = "msg-sender";
-  from.textContent = sender || "Sistema";
-
-  const content = document.createElement("div");
-  content.className = "msg-text";
-  content.textContent = text;
-
-  const time = document.createElement("div");
-  time.className = "msg-time";
-
-  const date = new Date(timestamp || Date.now());
-  time.textContent = date.toLocaleTimeString("pt-BR", {
+function formatTime(t) {
+  return new Date(t).toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit"
   });
-
-  msg.appendChild(from);
-  msg.appendChild(content);
-  msg.appendChild(time);
-  box.appendChild(msg);
-
-  box.scrollTop = box.scrollHeight;
 }
-
-
-function renderConversationList() {
-  const list = document.getElementById("conversationList");
-  list.innerHTML = "";
-
-  Object.keys(conversations).forEach(sender => {
-    const msgs = conversations[sender];
-    const last = msgs[msgs.length - 1];
-
-    const div = document.createElement("div");
-    div.className = "conversation-item";
-    div.onclick = () => openChat(sender);
-
-    div.innerHTML = `
-      <div>
-        <div class="conversation-name">${sender}</div>
-        <div class="conversation-preview">${last.message.slice(0, 30)}</div>
-      </div>
-      <div class="conversation-time">
-        ${new Date(last.timestamp).toLocaleTimeString("pt-BR", {
-          hour: "2-digit",
-          minute: "2-digit"
-        })}
-      </div>
-    `;
-
-    list.appendChild(div);
-  });
-}
-
-function openChat(sender) {
-  currentChat = sender;
-
-  document.getElementById("conversationList").classList.add("hidden");
-  document.getElementById("chatView").classList.remove("hidden");
-
-  document.getElementById("chatTitle").textContent = sender;
-
-  renderChatMessages();
-}
-
-
-
-function renderChatMessages() {
-  const box = document.getElementById("chatMessages");
-  box.innerHTML = "";
-
-  conversations[currentChat].forEach(m => {
-    appendMessage(m.sender, m.message, m.timestamp, box);
-  });
-
-  box.scrollTop = box.scrollHeight;
-}
-function closeChat() {
-  currentChat = null;
-
-  document.getElementById("chatView").classList.add("hidden");
-  document.getElementById("conversationList").classList.remove("hidden");
-}
-
-async function sendReply() {
-  const text = document.getElementById("replyText").value.trim();
-  if (!text || !currentChat) return;
-
-  document.getElementById("replyText").value = "";
-
-  // ✅ render otimista
-  appendMessage("Você", text, Date.now(), document.getElementById("chatMessages"), "outgoing");
-
-  await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "phoneSendReply",
-      pin: window.playerPin,
-      npc: currentChat,
-      message: text
-    })
-  });
-}
-
