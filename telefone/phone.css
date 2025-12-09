@@ -336,6 +336,42 @@ body {
   margin-top: 2px;
 }
 
+/* ===== SCROLLBAR CYBERPUNK — GLOBAL (CHAT + LISTA) ===== */
+
+#conversationList::-webkit-scrollbar,
+#chatMessages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#conversationList::-webkit-scrollbar-track,
+#chatMessages::-webkit-scrollbar-track {
+  background: rgba(0, 255, 255, 0.08);
+  border-left: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+#conversationList::-webkit-scrollbar-thumb,
+#chatMessages::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #00ffff,
+    #ff00ff
+  );
+  border-radius: 6px;
+  box-shadow:
+    0 0 6px rgba(0,255,255,0.8),
+    inset 0 0 4px rgba(0,0,0,0.6);
+}
+
+#conversationList::-webkit-scrollbar-thumb:hover,
+#chatMessages::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #ff00ff,
+    #00ffff
+  );
+}
+
+
 #chatHeader {
   flex-shrink: 0;
   position: relative;
@@ -346,6 +382,38 @@ body {
   overflow-y: auto;
   padding: 10px;
 }
+
+/* ===== SCROLLBAR CYBERPUNK — CHAT ===== */
+
+#chatMessages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chatMessages::-webkit-scrollbar-track {
+  background: rgba(0, 255, 255, 0.08);
+  border-left: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+#chatMessages::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #00ffff,
+    #ff00ff
+  );
+  border-radius: 6px;
+  box-shadow:
+    0 0 6px rgba(0,255,255,0.8),
+    inset 0 0 4px rgba(0,0,0,0.6);
+}
+
+#chatMessages::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #ff00ff,
+    #00ffff
+  );
+}
+
 
 #chatView {
   flex-direction: column;
