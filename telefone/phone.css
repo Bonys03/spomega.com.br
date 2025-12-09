@@ -201,16 +201,35 @@ body {
 
 /* MENSAGENS */
 
+#messagesContent {
+  height: calc(100% - 40px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+
 .msg {
-  margin-bottom: 8px;
-  padding: 6px;
+  margin-bottom: 10px;
+  padding: 8px;
   border-radius: 6px;
 
-  /* ✅ QUEBRA DE LINHA CORRETA */
-  white-space: pre-wrap;      /* respeita \n e quebra linhas */
-  word-break: break-word;     /* quebra palavras muito longas */
-  overflow-wrap: break-word;  /* padrão moderno */
-  max-width: 90%;             /* evita ocupar tela inteira */
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  max-width: 90%;
+}
+
+.msg-text {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.msg-time {
+  font-size: 10px;
+  opacity: 0.55;
+  margin-top: 4px;
+  text-align: right;
 }
 
 .msg.incoming {

@@ -171,10 +171,7 @@ async function pollMessages() {
     const box = document.getElementById("messagesContent");
 
     data.messages.forEach(m => {
-      const div = document.createElement("div");
-      div.className = "msg incoming";
-      div.textContent = m.message;
-      box.appendChild(div);
+      appendMessage(m.message, m.timestamp);
     });
 
     box.scrollTop = box.scrollHeight;
@@ -201,10 +198,7 @@ async function loadMessageHistory() {
     if (!data.success) return;
 
     data.messages.forEach(m => {
-      const div = document.createElement("div");
-      div.className = "msg incoming";
-      div.textContent = m.message;
-      box.appendChild(div);
+      appendMessage(m.message, m.timestamp);
     });
 
     // começa já no final do histórico
@@ -218,4 +212,31 @@ async function loadMessageHistory() {
   } catch (err) {
     console.error(err);
   }
+}
+
+function appendMessage(text, timestamp) {
+  const box = document.getElementById("messagesContent");
+
+  const msg = document.createElement("div");
+  msg.className = "msg incoming";
+
+  const content = document.createElement("div");
+  content.className = "msg-text";
+  content.textContent = text;
+
+  const time = document.createElement("div");
+  time.className = "msg-time";
+
+  const date = new Date(timestamp || Date.now());
+  time.textContent = date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  msg.appendChild(content);
+  msg.appendChild(time);
+  box.appendChild(msg);
+
+  // ✅ auto-scroll seguro
+  box.scrollTop = box.scrollHeight;
 }
