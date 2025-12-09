@@ -1,5 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyell6wEMmMXRB-PazRK9n7M2dW0h3Cd5gzyCT7PPQ_3IUEM32gSC80UK2VcGLO95QMtw/exec";
 let currentPlayer = null;
+let pollingStarted = false;
 
 /* ===== RELOGIOS ===== */
 
@@ -209,9 +210,12 @@ async function loadMessageHistory() {
     // começa já no final do histórico
     box.scrollTop = box.scrollHeight;
 
+    if (!pollingStarted) {
+      pollingStarted = true;
+      setInterval(pollMessages, 4000); // 4 segundos, por exemplo
+    }
+
   } catch (err) {
     console.error(err);
   }
 }
-
-setInterval(pollMessages, 4000); // a cada 4 segundos
