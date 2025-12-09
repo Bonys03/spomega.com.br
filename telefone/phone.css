@@ -293,17 +293,26 @@ body {
 }
 
 #conversationList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+
   overflow-y: auto;
-  padding-bottom: 40px;
+
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
+
+#conversationList::after {
+  content: "";
+  display: block;
+  height: max(60px, 8vh);  /* espaço extra REAL abaixo do último item */
+  flex-shrink: 0;
+}
+
 
 .conversation-item {
   padding: 12px;
@@ -327,12 +336,6 @@ body {
   margin-top: 2px;
 }
 
-#chatView {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 #chatHeader {
   flex-shrink: 0;
   position: relative;
@@ -345,12 +348,8 @@ body {
 }
 
 #chatView {
-  display: flex;
   flex-direction: column;
-}
-
-#conversationList,
-#chatView {
+  display: flex;
   position: absolute;
   inset: 0;
   width: 100%;
