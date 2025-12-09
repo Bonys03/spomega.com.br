@@ -95,9 +95,18 @@ body {
 
 /* ===== STATUS ICONS — CYBERPUNK ===== */
 
+.status-right {
+  display: flex;
+  align-items: center;      /* ✅ alinha verticalmente */
+  gap: 8px;                 /* ✅ espaço consistente */
+  height: 100%;
+}
+
+
 .status-right svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
   fill: #00ffff;
 
   filter:
@@ -120,9 +129,12 @@ body {
 /* BATERIA */
 
 .battery {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
   position: relative;
-  width: 26px;
-  height: 12px;
+  width: 24px;
+  height: 10px;
   border: 1px solid #0ff;
   border-radius: 3px;
   margin-left: 4px;
@@ -146,7 +158,7 @@ body {
 .battery-cap {
   position: absolute;
   right: -3px;
-  top: 3px;
+  top: 2px;
   width: 3px;
   height: 6px;
   background: #00ffff;
