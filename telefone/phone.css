@@ -594,3 +594,95 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* ===== INPUT DE RESPOSTA — CYBERPUNK ===== */
+
+#chatInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(0, 15, 25, 0.95),
+    rgba(0, 5, 15, 0.98)
+  );
+
+  border-top: 1px solid rgba(0,255,255,0.4);
+  box-shadow: 0 -6px 12px rgba(0,255,255,0.15);
+}
+
+#replyText {
+  flex-grow: 1;
+  padding: 10px 12px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(0, 30, 40, 0.85),
+    rgba(0, 10, 20, 0.95)
+  );
+
+  border: 1px solid rgba(0,255,255,0.55);
+  color: #00ffff;
+
+  font-family: monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+
+  box-shadow:
+    0 0 8px rgba(0,255,255,0.35),
+    inset 0 0 6px rgba(0,255,255,0.25);
+
+  transition: all 0.25s ease;
+}
+
+#replyText::placeholder {
+  color: rgba(0,255,255,0.55);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#replyText:focus {
+  outline: none;
+  border-color: #ff00ff;
+
+  background: linear-gradient(
+    180deg,
+    rgba(40, 0, 40, 0.9),
+    rgba(20, 0, 30, 0.98)
+  );
+
+  box-shadow:
+    0 0 14px rgba(255,0,255,0.9),
+    inset 0 0 10px rgba(255,0,255,0.4);
+}
+
+#chatInput button {
+  width: 38px;
+  height: 38px;
+
+  background: transparent;
+  border: 1px solid #0ff;
+  color: #0ff;
+
+  font-size: 18px;
+  cursor: pointer;
+
+  box-shadow:
+    0 0 8px rgba(0,255,255,0.6),
+    inset 0 0 6px rgba(0,255,255,0.3);
+
+  transition: all 0.2s ease;
+}
+
+#chatInput button:hover {
+  border-color: #ff00ff;
+  color: #ff00ff;
+
+  box-shadow:
+    0 0 14px rgba(255,0,255,0.9),
+    inset 0 0 8px rgba(255,0,255,0.4);
+
+  transform: scale(1.1) rotate(-8deg);
+}
