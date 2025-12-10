@@ -305,6 +305,20 @@ async function sendNPCMessage() {
   const text = document.getElementById("npcMessage").value.trim();
   if (!text) return;
 
+  // render otimista antes da requisicao
+  const optimistic = {
+    sender: currentNPC,
+    direction: "OUT",
+    message: text,
+    timestamp: Date.now()
+  };
+
+  window.currentConversations[currentNPC].push(optimistic);
+  lastAdminTimestamp = getLastTimestamp(currentConversations);
+  openNPCChat(currentNPC);
+
+  document.getElementById("npcMessage").value = "";
+
   await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -315,20 +329,8 @@ async function sendNPCMessage() {
       message: text
     })
   });
-
-  // Atualiza o histórico local do painel
-  window.currentConversations[currentNPC].push({
-    sender: currentNPC,
-    direction: "OUT",
-    message: text,
-    timestamp: Date.now()
-  });
-  lastAdminTimestamp = getLastTimestamp(currentConversations);
-
-  document.getElementById("npcMessage").value = "";
-
-  openNPCChat(currentNPC);
 }
+
 
 async function pollAdminMessages() {
   if (!window.currentPin) return;
