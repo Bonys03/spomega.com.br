@@ -85,6 +85,7 @@ function doPost(e) {
   if (action === "phoneGetHistory") return phoneGetHistory(data);
   if (action === "phoneSendReply")     return phoneSendReply(data);
   if (action === "adminGetConversation") return adminGetConversation(data);
+  if (action === "adminPollMessages") return adminPollMessages(data);
 
 
   return jsonResponse({ success: false, error: "Ação inválida" });
@@ -300,14 +301,15 @@ function phoneSendReply(data) {
 function adminGetConversation(data) {
   if (!isAdmin(data.adminToken)) return jsonResponse({ success: false });
 
-  const pin = String(data.pin);
+  const pin = String(data.pin || "").trim();
   const sheet = getPhoneMessagesSheet();
   const rows = sheet.getDataRange().getValues();
 
   const conversations = {};
 
   for (let i = 1; i < rows.length; i++) {
-    if (rows[i][1] !== pin) continue;
+    const rowPin = String(rows[i][1]).trim();
+    if (rowPin !== pin) continue;
 
     const npc = rows[i][2];
 
@@ -321,12 +323,53 @@ function adminGetConversation(data) {
     });
   }
 
+  Object.keys(conversations).forEach(npc => {
+    conversations[npc].sort((a, b) => a.timestamp - b.timestamp);
+  });
+
   return jsonResponse({
     success: true,
     conversations
   });
 }
 
+function adminPollMessages(data) {
+  if (!isAdmin(data.adminToken)) return jsonResponse({ success: false });
+
+  const pin = String(data.pin || "").trim();
+  const lastTs = Number(data.lastTimestamp || 0);
+  if (!pin) return jsonResponse({ success: false });
+
+  const sheet = getPhoneMessagesSheet();
+  const rows = sheet.getDataRange().getValues();
+
+  const messages = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const rowPin = String(rows[i][1]).trim();
+    if (rowPin !== pin) continue;
+
+    const ts = Number(rows[i][5]);
+    if (ts <= lastTs) continue;
+
+    // retornamos apenas mensagens do jogador para o mestre
+    if (String(rows[i][3]) !== "IN") continue;
+
+    messages.push({
+      sender: rows[i][2],
+      direction: rows[i][3],
+      message: rows[i][4],
+      timestamp: rows[i][5]
+    });
+  }
+
+  messages.sort((a, b) => a.timestamp - b.timestamp);
+
+  return jsonResponse({
+    success: true,
+    messages
+  });
+}
 
 
 function phonePollMessages(data) {

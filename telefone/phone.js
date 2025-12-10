@@ -247,7 +247,7 @@ function appendMessage(sender, text, timestamp, container, direction) {
 
   const from = document.createElement("div");
   from.className = "msg-sender";
-  from.textContent = isOutgoing ? "Voce" : (sender || "Sistema");
+  from.textContent = isOutgoing ? "Você" : (sender || "Sistema");
 
   const content = document.createElement("div");
   content.className = "msg-text";

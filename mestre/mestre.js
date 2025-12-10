@@ -1,6 +1,7 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyell6wEMmMXRB-PazRK9n7M2dW0h3Cd5gzyCT7PPQ_3IUEM32gSC80UK2VcGLO95QMtw/exec";
 let adminPolling = false;
 let adminPollingTimer = null;
+let lastAdminTimestamp = 0;
 
 
 async function loadStatus() {
@@ -220,6 +221,7 @@ async function loadConversations() {
 
   window.currentPin = pin;
   window.currentNPC = null;
+  lastAdminTimestamp = getLastTimestamp(conversations);
 
   if (!adminPolling) {
   adminPolling = true;
@@ -271,6 +273,17 @@ function openNPCChat(npc) {
   historyDiv.scrollTop = historyDiv.scrollHeight;
 }
 
+function getLastTimestamp(conversations) {
+  let maxTs = 0;
+  Object.values(conversations || {}).forEach(list => {
+    const last = list[list.length - 1];
+    if (last && Number(last.timestamp) > maxTs) {
+      maxTs = Number(last.timestamp);
+    }
+  });
+  return maxTs;
+}
+
 async function sendNPCMessage() {
   if (!window.currentNPC || !window.currentPin) return;
 
@@ -296,6 +309,7 @@ async function sendNPCMessage() {
     message: text,
     timestamp: Date.now()
   });
+  lastAdminTimestamp = getLastTimestamp(currentConversations);
 
   document.getElementById("npcMessage").value = "";
 
@@ -306,13 +320,15 @@ async function pollAdminMessages() {
   if (!window.currentPin) return;
 
   const adminToken = document.getElementById("adminToken").value;
+  const lastTimestamp = lastAdminTimestamp;
 
   const res = await fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
       action: "adminPollMessages",
       adminToken,
-      pin: currentPin
+      pin: currentPin,
+      lastTimestamp
     })
   });
 
@@ -338,6 +354,6 @@ async function pollAdminMessages() {
       openNPCChat(m.sender);
     }
   });
+
+  lastAdminTimestamp = getLastTimestamp(currentConversations);
 }
-
-
