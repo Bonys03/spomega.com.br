@@ -3,6 +3,19 @@ let adminPolling = false;
 let adminPollingTimer = null;
 let lastAdminTimestamp = 0;
 
+// permite enviar com Enter no campo de resposta
+document.addEventListener("DOMContentLoaded", () => {
+  const npcInput = document.getElementById("npcMessage");
+  if (npcInput) {
+    npcInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendNPCMessage();
+      }
+    });
+  }
+});
+
 
 async function loadStatus() {
   const adminToken = document.getElementById("adminToken").value;

@@ -5,6 +5,19 @@ let allMessages = [];          // histórico completo
 let conversations = {};        // agrupado por sender
 let currentChat = null;
 
+// enviar com Enter no campo do jogador
+document.addEventListener("DOMContentLoaded", () => {
+  const replyInput = document.getElementById("replyText");
+  if (replyInput) {
+    replyInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendReply();
+      }
+    });
+  }
+});
+
 
 /* ===== RELOGIOS ===== */
 
