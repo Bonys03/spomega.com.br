@@ -221,7 +221,8 @@ async function loadConversations() {
 
   window.currentPin = pin;
   window.currentNPC = null;
-  lastAdminTimestamp = getLastTimestamp(conversations);
+  window.currentConversations = data.conversations;
+  lastAdminTimestamp = getLastTimestamp(window.currentConversations);
 
   if (!adminPolling) {
   adminPolling = true;
