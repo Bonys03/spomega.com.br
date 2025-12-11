@@ -286,7 +286,7 @@ body {
 .app-layer header .btn-home {
   position: absolute;
   right: 12px;
-  top: 48px;
+  top: 51px;
   transform: translateY(-50%);
   margin: 0;
   z-index: 5;
