@@ -121,6 +121,7 @@ let currentScreen = 0; // 0 = status, 1 = home
 let isDragging = false;
 let startX = 0;
 let currentX = 0;
+let activePointerId = null;
 
 function screenToX(idx) {
   return -idx * screen.offsetWidth;
@@ -131,32 +132,17 @@ function setTranslate(x, animate = false) {
   swipePages.style.transform = `translateX(${x}px)`;
 }
 
-// inicial
-setTranslate(screenToX(currentScreen), false);
+function canSwipe() {
+  return !document.querySelector(".app-layer.active");
+}
 
-// start drag
-screen.addEventListener("mousedown", e => {
-  // se algum app estiver aberto, não permitir swipe
-  if (document.querySelector(".app-layer.active")) return;
-
-  isDragging = true;
-  startX = e.clientX;
-  currentX = startX;
-});
-
-// move
-document.addEventListener("mousemove", e => {
-  if (!isDragging) return;
-
-  currentX = e.clientX;
-  const delta = currentX - startX;
-  setTranslate(screenToX(currentScreen) + delta, false);
-});
-
-// end
-document.addEventListener("mouseup", () => {
-  if (!isDragging) return;
+function finishSwipe(pointerId) {
+  if (!isDragging || pointerId !== activePointerId) return;
   isDragging = false;
+
+  if (screen.hasPointerCapture(pointerId)) {
+    screen.releasePointerCapture(pointerId);
+  }
 
   const delta = currentX - startX;
   const threshold = screen.offsetWidth * 0.25;
@@ -168,6 +154,49 @@ document.addEventListener("mouseup", () => {
   }
 
   setTranslate(screenToX(currentScreen), true);
+  activePointerId = null;
+}
+
+// inicial
+setTranslate(screenToX(currentScreen), false);
+
+// start drag
+screen.addEventListener("pointerdown", e => {
+  // se algum app estiver aberto, não permitir swipe
+  if (!canSwipe()) return;
+
+  isDragging = true;
+  activePointerId = e.pointerId;
+  screen.setPointerCapture(e.pointerId);
+  startX = e.clientX;
+  currentX = startX;
+});
+
+// move
+screen.addEventListener("pointermove", e => {
+  if (!isDragging || e.pointerId !== activePointerId) return;
+
+  currentX = e.clientX;
+  const delta = currentX - startX;
+  setTranslate(screenToX(currentScreen) + delta, false);
+});
+
+// end
+screen.addEventListener("pointerup", e => {
+  finishSwipe(e.pointerId);
+});
+
+screen.addEventListener("pointercancel", e => {
+  finishSwipe(e.pointerId);
+});
+
+screen.addEventListener("pointerleave", e => {
+  finishSwipe(e.pointerId);
+});
+
+// recalc ao rotacionar ou redimensionar
+window.addEventListener("resize", () => {
+  setTranslate(screenToX(currentScreen), false);
 });
 
 async function pollMessages() {
