@@ -569,8 +569,8 @@ body {
 
 .btn-home {
   position: absolute;
-  right: 0;
-  top: 4px;
+  right: 6px;
+  top: 6px;
   height: 36px;
   width: 36px;
 }
@@ -586,9 +586,9 @@ body {
 
 .backBtn {
   position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 8px;
+  top: 8px;
+  transform: none;
 
   width: 34px;
   height: 34px;
