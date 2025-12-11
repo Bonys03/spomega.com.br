@@ -303,17 +303,18 @@ body {
 
 #conversationList {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-
-  overflow-y: auto;
+  top: 58px;          /* ↓ empurra para baixo do header MENSAGENS */
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   padding: 10px;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 
 #conversationList::after {
   content: "";
