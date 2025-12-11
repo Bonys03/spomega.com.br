@@ -109,6 +109,13 @@ function closeApp() {
   });
 }
 
+function goHome() {
+  closeChat(); // garante que a view volte para lista ao sair
+  closeApp();
+  currentScreen = 1;
+  setTranslate(screenToX(currentScreen), true);
+}
+
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
