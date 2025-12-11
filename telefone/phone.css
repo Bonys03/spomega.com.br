@@ -283,9 +283,12 @@ body {
 
 .app-layer header .btn-close,
 .app-layer header .btn-home {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 5;
 }
+
 
 
 
@@ -566,20 +569,6 @@ body {
     0 0 12px rgba(255,0,255,0.9),
     inset 0 0 8px rgba(255,0,255,0.4);
   transform: rotate(-15deg);
-}
-
-.btn-home {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  z-index: 5;
-}
-
-.btn-close {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  z-index: 5;
 }
 
 .backBtn {
