@@ -241,8 +241,8 @@ body {
   background: #05080f;
   z-index: 10;
   padding: 6px;
-  border-bottom: 1px solid rgba(0,255,255,0.3);
-  box-shadow: 0 4px 10px rgba(0,255,255,0.15);
+  border-bottom: none;
+  box-shadow: none;
   display: none;
 }
 .app-layer .app-content {
