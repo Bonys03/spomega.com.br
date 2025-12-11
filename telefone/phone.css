@@ -552,19 +552,10 @@ body {
   height: 34px;
   border-radius: 50%;
   cursor: pointer;
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  z-index: 2;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  box-shadow:
-    0 0 8px rgba(0,255,255,0.6),
-    inset 0 0 6px rgba(0,255,255,0.3);
-
+  box-shadow: 0 0 8px rgba(0,255,255,0.6), inset 0 0 6px rgba(0,255,255,0.3);
   transition: all 0.2s ease;
 }
 
@@ -577,6 +568,27 @@ body {
   transform: rotate(-15deg);
 }
 
+.btn-home {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 5;
+}
+
+.btn-close {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 5;
+}
+
+.backBtn {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 5;
+}
+
 .btn-home:hover {
   color: #00ff88;
   border-color: #00ff88;
@@ -587,12 +599,6 @@ body {
 }
 
 .backBtn {
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  z-index: 5;
-  transform: none;
-
   width: 34px;
   height: 34px;
   border: 1px solid #0ff;
